@@ -1,0 +1,17 @@
+{
+    "name": "KitKat.JetSim.FloatingOrigin.Runtime",
+    "references": [
+        "GUID:99835874ee819da44948776e0df4ff1d",
+        "GUID:d668a3d28cde37a459b73d0662b3c95e",
+        "GUID:f9c26e56726b28c4689cb1fb7d79fd0e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
