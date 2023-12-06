@@ -1,15 +1,18 @@
 
 # ⚠ Using this prefab has implications ⚠
 
-**Anything that relies on world space will *not* function correctly.**
+**Anything that relies on world space may not function at all, or may produce undesireable results.**
 Examples:
 
 * Static batching
 * Occlusion culling
 * VRCObjectSync
 * User-placed portals
+* Some shaders
 
 If you need to sync the position of an object you need to do so in relation to the `Anchor` object. It's the first child of `WorldParent`.
+
+One such system that can do this is [SmartObjectSync](https://github.com/MMMaellon/SmartObjectSync).
 
 ___
 
