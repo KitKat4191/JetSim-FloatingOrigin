@@ -61,9 +61,8 @@ ___
 
 ### General Info
 
-Please **DO NOT** unpack the `FloatingOrigin` prefab.
-If you for some reason have to unpack it, make sure that the `Anchor` object is the first child of `WorldParent`.
+Please **DO NOT** unpack the `FloatingOrigin` prefab. If you for some reason have to unpack it, make sure that the `Anchor` object is the first child of `WorldParent`.
 
-For performance reasons It's important that you only parent objects that actually need to move with the world. I recommend that you also put objects that are close together in the world under a common parent. This is to reduce the amount of child objects on the `WorldParent`.
+For performance reasons It's important that you only parent objects that actually need to move with the world. I recommend that you also put objects that are close together in the world under a common parent. This is to reduce the amount of root child objects on the `WorldParent`.
 
 ___
