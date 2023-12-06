@@ -53,13 +53,14 @@ You can easily do this with the Creator Companion.
 
 ___
 
-### Using the prefab
+* In the `VRC Scene Descriptor` that can be found on the `VRCWorld` object you need to set the `Respawn Height Y` to some really large negative number such as `-100000`. This is to prevent the player and pickups constantly respawning when you fly or fall quickly.
+* On the top bar in Unity `KitKat > JetSim > Floating Origin > Install`
+* You now have a `WorldParent` object in your scene. You will need to parent all the objects that players will be able to see, walk on, interact with, etc. to this object.
 
-On the top bar in Unity `KitKat > JetSim > Floating Origin > Install`
-
-You now have a `WorldParent` object in your scene. You will need to parent all the objects that players will be able to see, walk on, interact with, etc. to this object.
+### Misc
 
 Please **DO NOT** unpack the `FloatingOrigin` prefab.
+If you for some reason have to unpack it, make sure that the `Anchor` object is the first child of `WorldParent`.
 
 For performance reasons It's important that you only parent objects that actually need to move with the world. I recommend that you also put objects that are close together in the world under a common parent. This is to reduce the amount of child objects on the `WorldParent`.
 
