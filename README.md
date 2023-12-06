@@ -57,7 +57,9 @@ ___
 * On the top bar in Unity `KitKat > JetSim > Floating Origin > Install`
 * You now have a `WorldParent` object in your scene. You will need to parent all the objects that players will be able to see, walk on, interact with, etc. to this object.
 
-### Misc
+___
+
+### General Info
 
 Please **DO NOT** unpack the `FloatingOrigin` prefab.
 If you for some reason have to unpack it, make sure that the `Anchor` object is the first child of `WorldParent`.
