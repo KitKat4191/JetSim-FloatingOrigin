@@ -1,66 +1,34 @@
 
+using System;
+using System.Linq;
+
 using UnityEngine;
 using UnityEditor;
 
 using VRC.Udon;
 using VRC.SDKBase;
-using VRC.SDKBase.Editor.BuildPipeline;
 using UdonSharpEditor;
 
 using KitKat.JetSim.FloatingOrigin.Runtime;
-using VRRefAssist.Editor.Extensions;
 
-using System.Linq;
+using VRRefAssist;
+using VRRefAssist.Editor.Extensions;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
-    internal class VRCBuildCallback : IVRCSDKBuildRequestedCallback
-    {
-        public int callbackOrder => -2;
-
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
-        {
-            if (requestedBuildType == VRCSDKRequestedBuildType.Avatar) return true;
-
-            return FO_BuildValidator.IsSetupValid(true);
-        }
-    }
-
-    [InitializeOnLoad]
-    [DefaultExecutionOrder(1000000)]
     public class FO_BuildValidator : UnityEditor.Editor
     {
-        #region PLAY MODE CALLBACK
 
-        static FO_BuildValidator()
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeChanged;
-        }
-
-        private static void OnPlayModeChanged(PlayModeStateChange state)
-        {
-            if (state != PlayModeStateChange.ExitingEditMode) return;
-
-            IsSetupValid(false);
-        }
-
-        #endregion // PLAY MODE AND BUILD CALLBACK
-
-
+        [RunOnBuild(int.MinValue)]
         [MenuItem("KitKat/JetSim/Floating Origin/Execute All Automation", priority = 100)]
-        private static void ManuallyExecuteAutomation() => IsSetupValid(false);
-
-        public static bool IsSetupValid(bool isBuild)
+        public static void RunOnBuild()
         {
-            if (!UsingFloatingOrigin()) return true;
-
-            if (!HandleObjectSyncs(isBuild)) return false;
+            if (!UsingFloatingOrigin()) return;
+            if (ObjectSyncIssues()) return;
 
             RemoveAllStationNotifiers();
             SetUpStationNotifiers();
             SetUpParticleSystems();
-
-            return true;
         }
 
         private static bool UsingFloatingOrigin()
@@ -69,17 +37,20 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
             if (floatingOriginManagers.Length == 0) return false; // I'm assuming you don't want to use the floating origin system if you haven't set it up.
             if (floatingOriginManagers.Length > 1)
+            {
                 FO_Logger._printError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
+                throw new Exception("Setup was invalid, there are several FO_Manager present in the scene.");
+            }
 
             return true;
         }
 
-        private static bool HandleObjectSyncs(bool isBuild)
+        private static bool ObjectSyncIssues()
         {
             var settings = FO_Preferences.GetOrCreate();
 
             var syncs = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRC.SDK3.Components.VRCObjectSync>();
-            if (syncs.Length == 0) return true;
+            if (syncs.Length == 0) return false;
 
             if (settings.ShowObjectSyncWarning)
             {
@@ -91,12 +62,11 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 }
             }
 
-            if (!settings.ShowObjectSyncPopup) return true;
+            #region MODAL WINDOW
 
-            if (isBuild)
-                #region BUILD DIALOG
-            {
-                int input = EditorUtility.DisplayDialogComplex(
+            if (!settings.ShowObjectSyncPopup) return false;
+
+            int input = EditorUtility.DisplayDialogComplex(
                     title: "JetSim - FloatingOrigin",
                     message: "You are using VRCObjectSync in your project!\n" +
                     "VRCObjectSync only works in world space.\n" +
@@ -106,35 +76,21 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     cancel: "Okay",
                     alt: "Abort Build");
 
-                if (input == 0)
-                {
-                    settings.ShowObjectSyncPopup = false;
-                    EditorUtility.SetDirty(settings);
-                }
-
-                if (input == 2)
-                {
-                    FO_Logger._printError("Build aborted by user.");
-                    return false;
-                }
-                else return true;
-            }
-                #endregion // BUILD DIALOG
-            else
-                #region PLAY MODE DIALOG
+            if (input == 0)
             {
-                settings.ShowObjectSyncPopup = !EditorUtility.DisplayDialog(
-                    title: "JetSim - FloatingOrigin",
-                    message: "You are using VRCObjectSync in your project!\n" +
-                    "VRCObjectSync only works in world space.\n" +
-                    "These objects will be desynced compared to the world and players.",
-                    // Buttons:
-                    ok: "Don't show again",
-                    cancel: "Okay");
+                settings.ShowObjectSyncPopup = false;
                 EditorUtility.SetDirty(settings);
-                return true;
             }
-                #endregion // PLAY MODE DIALOG
+
+            if (input == 2)
+            {
+                FO_Logger._printError("Build aborted by user.");
+                throw new Exception("Build aborted by user.");
+            }
+            
+            return false;
+
+            #endregion // MODAL WINDOW
         }
 
 
