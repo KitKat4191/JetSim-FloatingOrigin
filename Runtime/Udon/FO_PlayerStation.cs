@@ -77,14 +77,14 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private void Update()
         {
             if (_localPlayerIsOwner) { RequestSerialization(); return; }
-
+            
             // Remote players need to interpolate the position and rotation.
-
             _smoothPlayerPosition = Vector3.Lerp(_smoothPlayerPosition, _playerPosition, _positionSmoothing);
-            transform.position = _smoothPlayerPosition + _anchor.position;
-
             _smoothPlayerRotation = Quaternion.Slerp(_smoothPlayerRotation, _playerRotation, _rotationSmoothing);
-            transform.rotation = _smoothPlayerRotation;
+            
+            transform.SetPositionAndRotation(
+                _smoothPlayerPosition + _anchor.position,
+                _smoothPlayerRotation);
         }
 
         #endregion // UNITY
