@@ -54,6 +54,7 @@ You can easily do this with the Creator Companion.
 ___
 
 * In the `VRC Scene Descriptor` that can be found on the `VRCWorld` object you need to set the `Respawn Height Y` to some really large negative number such as `-100000`. This is to prevent the player and pickups constantly respawning when you fly or fall quickly.
+* Also in the `Scene Descriptor`, I highly recommend that you enable `Forbid User Portals`. This is because user portals are synced in world space and will be desynced compared to the rest of the world.
 * On the top bar in Unity `KitKat > JetSim > Floating Origin > Install`
 * You now have a `WorldParent` object in your scene. You will need to parent all the objects that players will be able to see, walk on, interact with, etc. to this object.
 * If you are using Unity 2022 you can mark the `WorldParent` object as the [default parent](https://vrclibrary.com/wiki/books/whats-new-in-unity-2022/page/set-any-gameobject-as-default-parent) to make your life easier.
