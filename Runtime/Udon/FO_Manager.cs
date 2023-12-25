@@ -25,6 +25,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public float DistanceMoveThreshold = 100;
         public float SecondsBetweenDistanceCheck = 3;
 
+        [Space]
+        public Transform anchor;
+
         /// <summary>
         /// If the local local player is in a station other than the FO_PlayerStation.
         /// </summary>

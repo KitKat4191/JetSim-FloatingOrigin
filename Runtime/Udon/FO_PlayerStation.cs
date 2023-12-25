@@ -71,7 +71,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
-            _anchor = FO_Manager.transform.GetChild(0);
+            _anchor = FO_Manager.anchor;
         }
 
         private void Update()

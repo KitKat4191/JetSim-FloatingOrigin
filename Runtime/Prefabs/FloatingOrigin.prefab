@@ -257,6 +257,7 @@ MonoBehaviour:
   PositionSmoothing: 0.07
   DistanceMoveThreshold: 100
   SecondsBetweenDistanceCheck: 3
+  anchor: {fileID: 4901801550909936621}
   InExternalStation: 0
 --- !u!114 &5987398156077635380
 MonoBehaviour:
