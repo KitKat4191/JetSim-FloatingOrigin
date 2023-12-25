@@ -18,7 +18,6 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 {
     public class FO_BuildValidator : UnityEditor.Editor
     {
-
         [RunOnBuild(int.MinValue)]
         [MenuItem("KitKat/JetSim/Floating Origin/Execute All Automation", priority = 100)]
         public static void RunOnBuild()
@@ -39,7 +38,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             if (floatingOriginManagers.Length > 1)
             {
                 FO_Logger._printError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
-                throw new Exception("Setup was invalid, there are several FO_Manager present in the scene.");
+                throw new Exception("Setup was invalid, there are several FO_Managers present in the scene.");
             }
 
             return true;
