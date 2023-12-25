@@ -7,16 +7,14 @@ using VRRefAssist.Editor.Extensions;
 using KitKat.JetSim.FloatingOrigin.Runtime;
 
 using System.Linq;
-using UnityEngine.Windows;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
     public class FO_Installer
     {
-        #region MENU ITEMS
+        #region API
 
-        [MenuItem("KitKat/JetSim/Floating Origin/Install", priority = 80)]
-        private static void Install()
+        public static void Install()
         {
             if (!ValidateParticleSystems()) return;
             var root = GetAllRootTransforms();
@@ -24,7 +22,9 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             ParentTransformsToWorldParent(root);
         }
 
-        #endregion // MENU ITEMS
+        #endregion // API
+
+        #region INTERNAL
 
         private static Transform[] GetAllRootTransforms()
         {
@@ -105,5 +105,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
             FO_Logger._printSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
         }
+
+        #endregion // INTERNAL
     }
 }

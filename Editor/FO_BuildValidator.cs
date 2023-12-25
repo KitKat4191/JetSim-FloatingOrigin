@@ -5,6 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
+using UnityEngine.SceneManagement;
+
 using VRC.Udon;
 using VRC.SDKBase;
 using UdonSharpEditor;
@@ -19,84 +21,26 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
     public class FO_BuildValidator : UnityEditor.Editor
     {
         [RunOnBuild(int.MinValue)]
-        [MenuItem("KitKat/JetSim/Floating Origin/Execute All Automation", priority = 100)]
         public static void RunOnBuild()
         {
             if (!UsingFloatingOrigin()) return;
-            if (ObjectSyncIssues()) return;
+            if (FoundObjectSyncIssues()) return;
 
+            DisableStatics();
             RemoveAllStationNotifiers();
             SetUpStationNotifiers();
             SetUpParticleSystems();
         }
 
-        private static bool UsingFloatingOrigin()
+        public static void DisableStatics()
         {
-            FO_Manager[] floatingOriginManagers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_Manager>();
-
-            if (floatingOriginManagers.Length == 0) return false; // I'm assuming you don't want to use the floating origin system if you haven't set it up.
-            if (floatingOriginManagers.Length > 1)
-            {
-                FO_Logger._printError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
-                throw new Exception("Setup was invalid, there are several FO_Managers present in the scene.");
-            }
-
-            return true;
+            var objects = FindObjectsOfType<GameObject>(true);
+            foreach (var obj in objects) { obj.isStatic = false; }
         }
-
-        private static bool ObjectSyncIssues()
-        {
-            var settings = FO_Preferences.GetOrCreate();
-
-            var syncs = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRC.SDK3.Components.VRCObjectSync>();
-            if (syncs.Length == 0) return false;
-
-            if (settings.ShowObjectSyncWarning)
-            {
-                FO_Logger._printWarning($"You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
-                
-                foreach (var sync in syncs)
-                {
-                    FO_Logger._printWarning("Click me to highlight the object with VRCObjectSync!", sync);
-                }
-            }
-
-            #region MODAL WINDOW
-
-            if (!settings.ShowObjectSyncPopup) return false;
-
-            int input = EditorUtility.DisplayDialogComplex(
-                    title: "JetSim - FloatingOrigin",
-                    message: "You are using VRCObjectSync in your project!\n" +
-                    "VRCObjectSync only works in world space.\n" +
-                    "These objects will be desynced compared to the world and players.",
-                    // Buttons:
-                    ok: "Don't show again",
-                    cancel: "Okay",
-                    alt: "Abort Build");
-
-            if (input == 0)
-            {
-                settings.ShowObjectSyncPopup = false;
-                EditorUtility.SetDirty(settings);
-            }
-
-            if (input == 2)
-            {
-                FO_Logger._printError("Build aborted by user.");
-                throw new Exception("Build aborted by user.");
-            }
-            
-            return false;
-
-            #endregion // MODAL WINDOW
-        }
-
 
         #region STATION NOTIFIERS
 
-        [MenuItem("KitKat/JetSim/Floating Origin/Set Up StationNotifiers", priority = 120)]
-        private static void SetUpStationNotifiers()
+        public static void SetUpStationNotifiers()
         {
             VRCStation[] stations = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRCStation>();
             stations = stations.Where(s => s.GetComponent<FO_PlayerStation>() == null).ToArray();
@@ -128,8 +72,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             }
         }
 
-        [MenuItem("KitKat/JetSim/Floating Origin/Remove All StationNotifiers", priority = 121)]
-        private static void RemoveAllStationNotifiers()
+        public static void RemoveAllStationNotifiers()
         {
             var notifiers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_StationNotifier>();
             foreach (var notifier in notifiers)
@@ -145,8 +88,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         #region PARTICLES
 
-        [MenuItem("KitKat/JetSim/Floating Origin/Set Up Particle Simulation Spaces", priority = 140)]
-        private static void SetUpParticleSystems()
+        public static void SetUpParticleSystems()
         {
             Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform.GetChild(0);
 
@@ -165,8 +107,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             if (particleSystemsChanged == 0) { FO_Logger._print("No particle systems changed."); return; }
             FO_Logger._printSuccess($"Set up simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
         }
-        [MenuItem("KitKat/JetSim/Floating Origin/Restore Particle Simulation Spaces", priority = 141)]
-        private static void RestoreParticleSimulationSpaces()
+        
+        public static void RestoreParticleSimulationSpaces()
         {
             Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform.GetChild(0);
 
@@ -186,8 +128,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             FO_Logger._printSuccess($"Restored simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
         }
 
-        [MenuItem("KitKat/JetSim/Floating Origin/Particle System Repair", priority = 152)]
-        private static void ParticleSystemRepair()
+        public static void ParticleSystemRepair()
         {
             ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => 
                     p.main.simulationSpace == ParticleSystemSimulationSpace.Custom && 
@@ -226,5 +167,67 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         }
 
         #endregion // PARTICLES
+
+        #region INTERNAL
+
+        private static bool UsingFloatingOrigin()
+        {
+            FO_Manager[] floatingOriginManagers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_Manager>();
+
+            if (floatingOriginManagers.Length == 0) return false; // I'm assuming you don't want to use the floating origin system if you haven't set it up.
+            if (floatingOriginManagers.Length > 1)
+            {
+                FO_Logger._printError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
+                throw new Exception("Setup was invalid, there are several FO_Managers present in the scene.");
+            }
+
+            return true;
+        }
+
+        private static bool FoundObjectSyncIssues()
+        {
+            var settings = FO_Preferences.GetOrCreate();
+
+            var syncs = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRC.SDK3.Components.VRCObjectSync>();
+            if (syncs.Length == 0) return false;
+
+            if (settings.ShowObjectSyncWarning)
+            {
+                FO_Logger._printWarning($"You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
+                foreach (var sync in syncs) { FO_Logger._printWarning("Click me to highlight the object with VRCObjectSync!", sync); }
+            }
+
+            #region MODAL WINDOW
+
+            if (!settings.ShowObjectSyncPopup) return false;
+
+            int input = EditorUtility.DisplayDialogComplex(
+                    title: "JetSim - FloatingOrigin",
+                    message: "You are using VRCObjectSync in your project!\n" +
+                    "VRCObjectSync only works in world space.\n" +
+                    "These objects will be desynced compared to the world and players.",
+                    // Buttons:
+                    ok: "Don't show again",
+                    cancel: "Okay",
+                    alt: "Abort Build");
+
+            if (input == 0)
+            {
+                settings.ShowObjectSyncPopup = false;
+                EditorUtility.SetDirty(settings);
+            }
+
+            if (input == 2)
+            {
+                FO_Logger._printError("Build aborted by user.");
+                throw new Exception("Build aborted by user.");
+            }
+
+            return false;
+
+            #endregion // MODAL WINDOW
+        }
+
+        #endregion // INTERNAL
     }
 }
