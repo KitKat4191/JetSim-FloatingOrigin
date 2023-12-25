@@ -74,11 +74,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5012211552199741230}
-  - component: {fileID: 5314864620942891111}
+  - component: {fileID: 3221832412419883595}
   - component: {fileID: 1312139133659568640}
   - component: {fileID: 6140958270563680098}
   - component: {fileID: 8559074342215245510}
-  m_Layer: 4
+  m_Layer: 18
   m_Name: DynamicPortalFix
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,8 +100,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2065705701483597025}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &5314864620942891111
-BoxCollider:
+--- !u!135 &3221832412419883595
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -119,7 +119,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1312139133659568640
 Rigidbody:
@@ -137,10 +137,10 @@ Rigidbody:
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8388391
   m_ImplicitCom: 0
   m_ImplicitTensor: 0
   m_UseGravity: 0
