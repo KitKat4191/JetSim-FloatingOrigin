@@ -40,7 +40,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             var manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>();
             if (manager)
             {
-                FO_Logger._printWarning("Prefab was already present in the scene!", manager);
+                FO_Debugger.LogWarning("Prefab was already present in the scene!", manager);
                 Selection.activeObject = manager;
                 EditorGUIUtility.PingObject(manager);
                 return false;
@@ -54,7 +54,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             Selection.activeObject = manager;
             EditorGUIUtility.PingObject(manager);
 
-            FO_Logger._printSuccess("Added Floating Origin prefab to scene.");
+            FO_Debugger.LogSuccess("Added Floating Origin prefab to scene.");
             return true;
         }
 
@@ -74,7 +74,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     p.main.customSimulationSpace == null
                 ).ToArray();
 
-            if (particleSystems.Length == 0) { FO_Logger._printSuccess("All particle systems validated."); return true; }
+            if (particleSystems.Length == 0) { FO_Debugger.LogSuccess("All particle systems validated."); return true; }
 
             int input = EditorUtility.DisplayDialogComplex(
                     title: "JetSim - FloatingOrigin",
@@ -100,10 +100,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             {
                 var particleSystemMain = particle.main;
                 particleSystemMain.simulationSpace = space;
-                FO_Logger._print($"Updated simulation space.", particle);
+                FO_Debugger.Log($"Updated simulation space.", particle);
             }
 
-            FO_Logger._printSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
+            FO_Debugger.LogSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
         }
 
         #endregion // INTERNAL

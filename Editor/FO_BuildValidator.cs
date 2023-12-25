@@ -5,8 +5,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-using UnityEngine.SceneManagement;
-
 using VRC.Udon;
 using VRC.SDKBase;
 using UdonSharpEditor;
@@ -36,6 +34,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         {
             var objects = FindObjectsOfType<GameObject>(true);
             foreach (var obj in objects) { obj.isStatic = false; }
+            FO_Debugger.LogSuccess("Cleared All Static Flags.");
         }
 
         #region STATION NOTIFIERS
@@ -47,12 +46,12 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             
             if (stations.Length == 0) return;
 
-            FO_Logger._print($"{stations.Length} stations found.");
+            FO_Debugger.Log($"{stations.Length} stations found.");
 
             foreach (VRCStation station in stations)
                 station.gameObject.AddUdonSharpComponent(typeof(FO_StationNotifier));
 
-            FO_Logger._printSuccess($"Created {stations.Length} StationNotifier{(stations.Length > 1 ? "s" : "")}.");
+            FO_Debugger.LogSuccess($"Created {stations.Length} StationNotifier{(stations.Length > 1 ? "s" : "")}.");
 
             // Match the sync mode to the existing behaviours on the station.
             var notifiers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_StationNotifier>();
@@ -79,9 +78,9 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 UdonSharpEditorUtility.DestroyImmediate(notifier);
 
             if (notifiers.Length == 0)
-                FO_Logger._print("There were no StationNotifiers to remove.");
+                FO_Debugger.Log("There were no StationNotifiers to remove.");
             if (notifiers.Length > 0)
-                FO_Logger._printSuccess($"Removed {notifiers.Length} StationNotifier{(notifiers.Length > 1 ? "s" : "")}.");
+                FO_Debugger.LogSuccess($"Removed {notifiers.Length} StationNotifier{(notifiers.Length > 1 ? "s" : "")}.");
         }
 
         #endregion // STATION NOTIFIERS
@@ -104,8 +103,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 EditorUtility.SetDirty(particle);
                 particleSystemsChanged++;
             }
-            if (particleSystemsChanged == 0) { FO_Logger._print("No particle systems changed."); return; }
-            FO_Logger._printSuccess($"Set up simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
+            if (particleSystemsChanged == 0) { FO_Debugger.Log("No particle systems changed."); return; }
+            FO_Debugger.LogSuccess($"Set up simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
         }
         
         public static void RestoreParticleSimulationSpaces()
@@ -124,8 +123,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 EditorUtility.SetDirty(particle);
                 particleSystemsChanged++;
             }
-            if (particleSystemsChanged == 0) { FO_Logger._print("There were no particle systems to restore."); return; }
-            FO_Logger._printSuccess($"Restored simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
+            if (particleSystemsChanged == 0) { FO_Debugger.Log("There were no particle systems to restore."); return; }
+            FO_Debugger.LogSuccess($"Restored simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
         }
 
         public static void ParticleSystemRepair()
@@ -135,7 +134,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     p.main.customSimulationSpace == null
                 ).ToArray();
 
-            if (particleSystems.Length == 0) { FO_Logger._print("No particle systems to repair."); return; }
+            if (particleSystems.Length == 0) { FO_Debugger.Log("No particle systems to repair."); return; }
 
             Selection.objects = particleSystems;
 
@@ -160,10 +159,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     ParticleSystemSimulationSpace.World : 
                     ParticleSystemSimulationSpace.Local;
 
-                FO_Logger._print($"Updated simulation space.", particle);
+                FO_Debugger.Log($"Updated simulation space.", particle);
             }
 
-            FO_Logger._printSuccess($"Updated simulation space on {particleSystems.Length} ParticleSystems.");
+            FO_Debugger.LogSuccess($"Updated simulation space on {particleSystems.Length} ParticleSystems.");
         }
 
         #endregion // PARTICLES
@@ -177,7 +176,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             if (floatingOriginManagers.Length == 0) return false; // I'm assuming you don't want to use the floating origin system if you haven't set it up.
             if (floatingOriginManagers.Length > 1)
             {
-                FO_Logger._printError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
+                FO_Debugger.LogError($"{floatingOriginManagers.Length} Floating Origin Managers found! Please ensure there is only one instance of it in the scene.");
                 throw new Exception("Setup was invalid, there are several FO_Managers present in the scene.");
             }
 
@@ -193,8 +192,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
             if (settings.ShowObjectSyncWarning)
             {
-                FO_Logger._printWarning($"You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
-                foreach (var sync in syncs) { FO_Logger._printWarning("Click me to highlight the object with VRCObjectSync!", sync); }
+                FO_Debugger.LogWarning($"You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
+                foreach (var sync in syncs) { FO_Debugger.LogWarning("Click me to highlight the object with VRCObjectSync!", sync); }
             }
 
             #region MODAL WINDOW
@@ -219,7 +218,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
             if (input == 2)
             {
-                FO_Logger._printError("Build aborted by user.");
+                FO_Debugger.LogError("Build aborted by user.");
                 throw new Exception("Build aborted by user.");
             }
 
