@@ -32,16 +32,11 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         ////////////////////////
 
-        [MenuItem(_FOLDER_PATH + "Fix Particle Simulation Spaces", priority = 140)]
-        private static void SetUpParticleSystems() => FO_BuildValidator.SetUpParticleSystems();
+        [MenuItem(_FOLDER_PATH + "Validate Particle Systems", priority = 140)]
+        private static void ValidateParticleSystems() => FO_Installer.ValidateParticleSystems();
 
-        [MenuItem(_FOLDER_PATH + "Restore Particle Simulation Spaces", priority = 141)]
+        [MenuItem(_FOLDER_PATH + "Restore Simulation Spaces", priority = 141)]
         private static void RestoreParticleSimulationSpaces() => FO_BuildValidator.RestoreParticleSimulationSpaces();
-
-        ////////////////////////
-
-        [MenuItem(_FOLDER_PATH + "Particle System Repair", priority = 200)]
-        private static void ParticleSystemRepair() => FO_BuildValidator.ParticleSystemRepair();
 
         ////////////////////////
 

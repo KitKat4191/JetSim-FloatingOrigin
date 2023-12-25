@@ -13,6 +13,7 @@ using KitKat.JetSim.FloatingOrigin.Runtime;
 
 using VRRefAssist;
 using VRRefAssist.Editor.Extensions;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
@@ -87,82 +88,46 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         #region PARTICLES
 
+        /// <summary>
+        /// Finds all particle systems with simulation space world and changes them to custom.
+        /// </summary>
         public static void SetUpParticleSystems()
         {
-            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform.GetChild(0);
-
-            int particleSystemsChanged = 0;
-            foreach (ParticleSystem particle in UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>())
-            {
-                ParticleSystem.MainModule particleSystemMain = particle.main;
-                if (particleSystemMain.simulationSpace != ParticleSystemSimulationSpace.World) continue; // We only care about world-space particle systems
-
-                particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.Custom;
-                particleSystemMain.customSimulationSpace = anchor;
-
-                EditorUtility.SetDirty(particle);
-                particleSystemsChanged++;
-            }
-            if (particleSystemsChanged == 0) { FO_Debugger.Log("No particle systems changed."); return; }
-            FO_Debugger.LogSuccess($"Set up simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
-        }
-        
-        public static void RestoreParticleSimulationSpaces()
-        {
-            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform.GetChild(0);
-
-            int particleSystemsChanged = 0;
-            foreach (ParticleSystem particle in UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>())
-            {
-                ParticleSystem.MainModule particleSystemMain = particle.main;
-                if (particleSystemMain.simulationSpace != ParticleSystemSimulationSpace.Custom) continue;
-                if (particleSystemMain.customSimulationSpace != anchor) continue;
-
-                particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.World;
-
-                EditorUtility.SetDirty(particle);
-                particleSystemsChanged++;
-            }
-            if (particleSystemsChanged == 0) { FO_Debugger.Log("There were no particle systems to restore."); return; }
-            FO_Debugger.LogSuccess($"Restored simulation space of {particleSystemsChanged} ParticleSystem{(particleSystemsChanged == 1 ? "" : "s")}!");
-        }
-
-        public static void ParticleSystemRepair()
-        {
-            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => 
-                    p.main.simulationSpace == ParticleSystemSimulationSpace.Custom && 
-                    p.main.customSimulationSpace == null
-                ).ToArray();
-
-            if (particleSystems.Length == 0) { FO_Debugger.Log("No particle systems to repair."); return; }
-
-            Selection.objects = particleSystems;
-
-            int input = EditorUtility.DisplayDialogComplex(
-                    title: "JetSim - FloatingOrigin",
-                    message: $"Found {particleSystems.Length} particle systems with a custom simulation space set to null.\n" +
-                    "Which simulation space would you like to change them to?",
-                    // Buttons:
-                    ok: "World",
-                    alt: "Local",
-                    cancel: "Cancel");
-
-            // Cancel == 1
-            if (input == 1) return;
+            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().anchor;
+            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => p.main.simulationSpace == ParticleSystemSimulationSpace.World).ToArray();
 
             foreach (ParticleSystem particle in particleSystems)
             {
                 ParticleSystem.MainModule particleSystemMain = particle.main;
 
-                particleSystemMain.simulationSpace = 
-                    input == 0 ? 
-                    ParticleSystemSimulationSpace.World : 
-                    ParticleSystemSimulationSpace.Local;
-
+                particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.Custom;
+                particleSystemMain.customSimulationSpace = anchor;
                 FO_Debugger.Log($"Updated simulation space.", particle);
+                EditorUtility.SetDirty(particle);
             }
 
-            FO_Debugger.LogSuccess($"Updated simulation space on {particleSystems.Length} ParticleSystems.");
+            if (particleSystems.Length == 0) { FO_Debugger.Log("There were no particle systems to set up."); return; }
+            FO_Debugger.LogSuccess($"Updated simulation space to Custom on {particleSystems.Length} ParticleSystems.");
+        }
+        
+        public static void RestoreParticleSimulationSpaces()
+        {
+            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().anchor;
+            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => 
+                p.main.simulationSpace == ParticleSystemSimulationSpace.Custom &&
+                p.main.customSimulationSpace == anchor
+            ).ToArray();
+
+            foreach (ParticleSystem particle in particleSystems)
+            {
+                ParticleSystem.MainModule particleSystemMain = particle.main;
+                particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.World;
+                FO_Debugger.Log($"Updated simulation space.", particle);
+                EditorUtility.SetDirty(particle);
+            }
+
+            if (particleSystems.Length == 0) { FO_Debugger.Log("There were no particle systems to restore."); return; }
+            FO_Debugger.LogSuccess($"Updated simulation space to World on {particleSystems.Length} ParticleSystems.");
         }
 
         #endregion // PARTICLES

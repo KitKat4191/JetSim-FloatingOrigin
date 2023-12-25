@@ -16,10 +16,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         public static void Install()
         {
-            if (!ValidateParticleSystems()) return;
-            var root = GetAllRootTransforms();
+            if (ValidateParticleSystems()) return;
+            var rootTransforms = GetAllRootTransforms();
             if (!AddPrefabToScene()) return;
-            ParentTransformsToWorldParent(root);
+            ParentTransformsToWorldParent(rootTransforms);
         }
 
         #endregion // API
@@ -67,14 +67,20 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             foreach (Transform t in objects) { t.parent = manager; }
         }
 
-        private static bool ValidateParticleSystems()
+        /// <summary>
+        /// Finds all particle systems with a null simulation space and displays a modal window where the user can select which simulation space to change them to.
+        /// </summary>
+        /// <returns>
+        /// If the user pressed cancel.
+        /// </returns>
+        public static bool ValidateParticleSystems()
         {
             ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p =>
                     p.main.simulationSpace == ParticleSystemSimulationSpace.Custom &&
                     p.main.customSimulationSpace == null
                 ).ToArray();
 
-            if (particleSystems.Length == 0) { FO_Debugger.LogSuccess("All particle systems validated."); return true; }
+            if (particleSystems.Length == 0) { FO_Debugger.LogSuccess("All particle systems validated."); return false; }
 
             int input = EditorUtility.DisplayDialogComplex(
                     title: "JetSim - FloatingOrigin",
@@ -87,11 +93,11 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     cancel: "Cancel");
 
             // Cancel == 1
-            if (input == 1) return false;
+            if (input == 1) return true;
 
             ChangeSimulationSpace(particleSystems, input == 0 ? ParticleSystemSimulationSpace.World : ParticleSystemSimulationSpace.Local);
 
-            return true;
+            return false;
         }
 
         private static void ChangeSimulationSpace(ParticleSystem[] systems, ParticleSystemSimulationSpace space)
