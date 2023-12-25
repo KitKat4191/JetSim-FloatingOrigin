@@ -1,24 +1,41 @@
 ﻿
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using VRRefAssist.Editor.Extensions;
 using KitKat.JetSim.FloatingOrigin.Runtime;
 
 using System.Linq;
+using UnityEngine.Windows;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
     public class FO_Installer
     {
+        #region MENU ITEMS
+
         [MenuItem("KitKat/JetSim/Floating Origin/Install", priority = 80)]
         private static void Install()
         {
-            AddPrefabToScene();
-            ValidateParticleSystems();
+            if (!ValidateParticleSystems()) return;
+            var root = GetAllRootTransforms();
+            if (!AddPrefabToScene()) return;
+            ParentTransformsToWorldParent(root);
         }
 
-        private static void AddPrefabToScene()
+        #endregion // MENU ITEMS
+
+        private static Transform[] GetAllRootTransforms()
+        {
+            GameObject[] rootGos = SceneManager.GetActiveScene().GetRootGameObjects();
+            return rootGos.Select(x => x.transform).ToArray();
+        }
+
+        /// <returns>
+        /// If the prefab was added.
+        /// </returns>
+        private static bool AddPrefabToScene()
         {
             var manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>();
             if (manager)
@@ -26,7 +43,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 FO_Logger._printWarning("Prefab was already present in the scene!", manager);
                 Selection.activeObject = manager;
                 EditorGUIUtility.PingObject(manager);
-                return;
+                return false;
             }
 
             var asset = AssetDatabase.LoadAssetAtPath<Object>("Packages/com.kitkat.jetsim.floating-origin/Runtime/Prefabs/FloatingOrigin.prefab");
@@ -38,16 +55,26 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             EditorGUIUtility.PingObject(manager);
 
             FO_Logger._printSuccess("Added Floating Origin prefab to scene.");
+            return true;
         }
 
-        private static void ValidateParticleSystems()
+        private static void ParentTransformsToWorldParent(Transform[] objects)
+        {
+            if (objects == null) return;
+            if (objects.Length == 0) return;
+
+            var manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform;
+            foreach (Transform t in objects) { t.parent = manager; }
+        }
+
+        private static bool ValidateParticleSystems()
         {
             ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p =>
                     p.main.simulationSpace == ParticleSystemSimulationSpace.Custom &&
                     p.main.customSimulationSpace == null
                 ).ToArray();
 
-            if (particleSystems.Length == 0) { FO_Logger._printSuccess("All particle systems validated."); return; }
+            if (particleSystems.Length == 0) { FO_Logger._printSuccess("All particle systems validated."); return true; }
 
             int input = EditorUtility.DisplayDialogComplex(
                     title: "JetSim - FloatingOrigin",
@@ -60,21 +87,23 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     cancel: "Cancel");
 
             // Cancel == 1
-            if (input == 1) return;
+            if (input == 1) return false;
 
-            foreach (ParticleSystem particle in particleSystems)
+            ChangeSimulationSpace(particleSystems, input == 0 ? ParticleSystemSimulationSpace.World : ParticleSystemSimulationSpace.Local);
+
+            return true;
+        }
+
+        private static void ChangeSimulationSpace(ParticleSystem[] systems, ParticleSystemSimulationSpace space)
+        {
+            foreach (ParticleSystem particle in systems)
             {
-                ParticleSystem.MainModule particleSystemMain = particle.main;
-
-                particleSystemMain.simulationSpace =
-                    input == 0 ?
-                    ParticleSystemSimulationSpace.World :
-                    ParticleSystemSimulationSpace.Local;
-
+                var particleSystemMain = particle.main;
+                particleSystemMain.simulationSpace = space;
                 FO_Logger._print($"Updated simulation space.", particle);
             }
 
-            FO_Logger._printSuccess($"Updated simulation space on {particleSystems.Length} ParticleSystems.");
+            FO_Logger._printSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
         }
     }
 }
