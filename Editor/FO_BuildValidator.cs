@@ -13,7 +13,6 @@ using KitKat.JetSim.FloatingOrigin.Runtime;
 
 using VRRefAssist;
 using VRRefAssist.Editor.Extensions;
-using UnityEngine.Rendering.VirtualTexturing;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
