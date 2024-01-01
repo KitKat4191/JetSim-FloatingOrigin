@@ -18,13 +18,12 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 {
     public class FO_BuildValidator : UnityEditor.Editor
     {
-        [RunOnBuild(int.MinValue)]
+        [RunOnBuild(int.MinValue + 1000)]
         public static void RunOnBuild()
         {
             if (!UsingFloatingOrigin()) return;
             if (FoundObjectSyncIssues()) return;
 
-            DisableStatics();
             RemoveAllStationNotifiers();
             SetUpStationNotifiers();
             SetUpParticleSystems();
@@ -32,7 +31,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         public static void DisableStatics()
         {
-            var objects = FindObjectsOfType<GameObject>(true);
+            var objects = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<GameObject>();
             foreach (var obj in objects) { obj.isStatic = false; }
             FO_Debugger.LogSuccess("Cleared All Static Flags.");
         }
