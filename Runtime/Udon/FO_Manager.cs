@@ -5,7 +5,6 @@ using UnityEngine;
 using UdonSharp;
 using VRC.SDKBase;
 using VRRefAssist;
-using System.Dynamic;
 
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
