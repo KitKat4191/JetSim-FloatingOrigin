@@ -5,6 +5,7 @@ using UnityEngine;
 using UdonSharp;
 using VRC.SDKBase;
 using VRRefAssist;
+using System.Dynamic;
 
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
@@ -47,6 +48,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private bool _distanceCheckLoopStarted;
 
         private FO_Listener[] _listeners = new FO_Listener[0];
+
+        private Transform[] _dynamicObjects = new Transform[0];
 
         #endregion // PRIVATE FIELDS
 
@@ -153,6 +156,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             for (int i = 0; i < _rootObjects.Length; i++)
                 _rootObjects[i].SetParent(transform);
 
+            for (int i = 0; i < _dynamicObjects.Length; i++)
+                _dynamicObjects[i].SetParent(transform);
+
             NotifyListeners(anchor.position);
 
 #if DO_LOGGING
@@ -162,6 +168,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         public void _Subscribe(FO_Listener listener) => _listeners = AddUnique(_listeners, listener);
         public void _Unsubscribe(FO_Listener listener) => _listeners = Remove(_listeners, listener);
+
+        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = AddUnique(_dynamicObjects, obj);
+        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = Remove(_dynamicObjects, obj);
 
         #endregion // API
 
