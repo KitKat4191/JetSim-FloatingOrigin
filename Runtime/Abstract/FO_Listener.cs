@@ -8,7 +8,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     public abstract class FO_Listener : UdonSharpBehaviour
     {
-        [SerializeField, HideInInspector] private FO_Manager manager;
+        [SerializeField, HideInInspector] protected FO_Manager manager;
 
         public abstract void _Notify(Vector3 newOriginOffset);
 
