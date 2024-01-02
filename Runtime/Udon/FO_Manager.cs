@@ -16,13 +16,16 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
     {
         #region PUBLIC FIELDS
 
+        [Header("Player Sync Options:")]
+        [Tooltip("Quaternion.Slerp")]
         public float RotationSmoothing = 0.1f;
+        [Tooltip("Vector3.Lerp")]
         public float PositionSmoothing = 0.07f;
 
-        /// <summary>
-        /// The minimum distance from 0,0,0 required before moving the origin.
-        /// </summary>
+        [Header("Distance Move Options:")]
+        [Tooltip("The minimum distance (meters) from the origin that is required before moving the world.")]
         public float DistanceMoveThreshold = 100;
+        [Tooltip("How often the player's distance from the origin is measured.")]
         public float SecondsBetweenDistanceCheck = 3;
 
         [Space]
@@ -40,6 +43,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private VRCStation _playerStation;
         private VRCPlayerApi _localPlayer;
         private Transform[] _rootObjects;
+
+        private bool _distanceCheckLoopStarted;
+
+        private FO_Listener[] _listeners;
 
         #endregion // PRIVATE FIELDS
 
@@ -66,9 +73,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             _rootObjects = new Transform[transform.childCount];
             for (int i = 0; i < transform.childCount; i++)
-            {
                 _rootObjects[i] = transform.GetChild(i);
-            }
         }
 
         #endregion // UNITY
@@ -113,11 +118,13 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _RegisterPlayerStation(FO_PlayerStation playerStation)
         {
             if (!playerStation) return;
+            
             LocalPlayerStation = playerStation;
             _playerStation = LocalPlayerStation.GetComponent<VRCStation>();
+
             playerStation._SetInterpolationSettings(PositionSmoothing, RotationSmoothing);
 
-            SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsBetweenDistanceCheck);
+            StartDistanceCheckLoop();
         }
 
         /// <summary>
@@ -144,17 +151,28 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             transform.DetachChildren();
             transform.position = Vector3.zero;
             for (int i = 0; i < _rootObjects.Length; i++)
-            {
                 _rootObjects[i].SetParent(transform);
-            }
+
+            NotifyListeners(anchor.position);
+
 #if DO_LOGGING
             _printSuccess($"Moved origin {playerPos.magnitude}m");
 #endif
         }
 
+        public void _Subscribe(FO_Listener listener) => _listeners = AddUnique(_listeners, listener);
+        public void _Unsubscribe(FO_Listener listener) => _listeners = Remove(_listeners, listener);
+
         #endregion // API
 
         #region INTERNAL
+
+        private void StartDistanceCheckLoop()
+        {
+            if (_distanceCheckLoopStarted) return;
+            _distanceCheckLoopStarted = true;
+            SendCustomEventDelayedFrames(nameof(_DistanceCheckLoop), 1);
+        }
 
         /// <summary>
         /// The internal loop used to determine when to move the origin.
@@ -167,6 +185,60 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             _DistanceCheck();
             SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsBetweenDistanceCheck);
         }
+
+        private void NotifyListeners(Vector3 newOriginOffset)
+        {
+            foreach (FO_Listener listener in _listeners)
+            {
+                if (!listener) continue;
+                listener._Notify(newOriginOffset);
+            }
+        }
+
+        #region ARRAY STUFF
+
+        private static T[] AddUnique<T>(T[] array, T item)
+        {
+            int index = System.Array.IndexOf(array, item);
+            if (index > -1) return array; // The item is already in the array so we don't add it.
+
+            var temp = new T[array.Length + 1];
+
+            array.CopyTo(temp, 0);
+
+            array = temp;
+            array[array.Length - 1] = item;
+
+            return array;
+        }
+        
+        private static T[] Remove<T>(T[] array, T item)
+        {
+            int listenerIndex = System.Array.IndexOf(array, item);
+            if (listenerIndex == -1) return array; // The item isn't in the array so we don't need to remove it.
+
+            if (array.Length <= 1) return new T[0];
+
+            array[listenerIndex] = default;
+            // Put the last item in place of the empty slot to fill the gap.
+            int newLength = array.Length - 1;
+            Swap(array, listenerIndex, newLength);
+
+            // Shrink the array by 1
+            var newArray = new T[newLength];
+
+            System.Array.Copy(array, newArray, newLength);
+            return newArray;
+        }
+
+        private static void Swap<T>(T[] array, int A, int B)
+        {
+            T temp = array[A];
+            array[A] = array[B];
+            array[B] = temp;
+        }
+
+        #endregion // ARRAY STUFF
 
         #endregion // INTERNAL
 
