@@ -46,7 +46,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private bool _distanceCheckLoopStarted;
 
-        private FO_Listener[] _listeners;
+        private FO_Listener[] _listeners = new FO_Listener[0];
 
         #endregion // PRIVATE FIELDS
 
