@@ -24,7 +24,7 @@ ___
 ## Dependencies
 
 * Cyan Player Object Pool [VCC](https://cyanlaser.github.io/CyanPlayerObjectPool/), [GitHub](https://github.com/CyanLaser/CyanPlayerObjectPool)
-* VRRefAssist, [GitHub](https://github.com/LiveDimensions/VRRefAssist)
+* VRRefAssist [VCC](https://livedimensions.github.io/VRRefAssist/), [GitHub](https://github.com/LiveDimensions/VRRefAssist)
 
 ___
 
