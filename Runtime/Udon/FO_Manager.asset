@@ -426,13 +426,13 @@ MonoBehaviour:
       Data: 
     - Name: $k
       Entry: 1
-      Data: _matrixID
+      Data: _offsetVectorID
     - Name: $v
       Entry: 7
       Data: 25|UdonSharp.Compiler.FieldDefinition, UdonSharp.Editor
     - Name: <Name>k__BackingField
       Entry: 1
-      Data: _matrixID
+      Data: _offsetVectorID
     - Name: <UserType>k__BackingField
       Entry: 7
       Data: 26|System.RuntimeType, mscorlib
