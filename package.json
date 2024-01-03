@@ -14,10 +14,6 @@
     "com.livedimensions.vrrefassist": "0.0.6",
     "com.cyan.playerobjectpool": "1.1.2"
   },
-  "vpmDependencies": {
-    "com.livedimensions.vrrefassist": "^0.0.6",
-    "com.cyan.playerobjectpool": "^1.1.2"
-  },
   "keywords": [
     "kitkat",
     "jetsim",
