@@ -40,6 +40,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PRIVATE FIELDS
 
+        private int _matrixID;
+
         private VRCStation _playerStation;
         private VRCPlayerApi _localPlayer;
         private Transform[] _rootObjects;
@@ -71,6 +73,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
+            _matrixID = VRCShader.PropertyToID("_Udon_FO_WorldMatrix");
+            VRCShader.SetGlobalMatrix(_matrixID, Matrix4x4.TRS(anchor.position, Quaternion.identity, Vector3.one));
+
             _localPlayer = Networking.LocalPlayer;
 
             _rootObjects = new Transform[transform.childCount];
@@ -120,7 +125,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _RegisterPlayerStation(FO_PlayerStation playerStation)
         {
             if (!playerStation) return;
-            
+
             LocalPlayerStation = playerStation;
             _playerStation = LocalPlayerStation.GetComponent<VRCStation>();
 
@@ -159,6 +164,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
                 _dynamicObjects[i].SetParent(transform);
 
             NotifyListeners(anchor.position);
+
+            VRCShader.SetGlobalMatrix(_matrixID, Matrix4x4.TRS(anchor.position, Quaternion.identity, Vector3.one));
 
 #if DO_LOGGING
             _printSuccess($"Moved origin {playerPos.magnitude}m");
@@ -219,7 +226,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             return array;
         }
-        
+
         private static T[] Remove<T>(T[] array, T item)
         {
             int listenerIndex = System.Array.IndexOf(array, item);
