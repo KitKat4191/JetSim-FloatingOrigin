@@ -1,5 +1,6 @@
 
 #define DO_LOGGING
+#pragma warning disable IDE1006 // Naming Styles
 
 using UnityEngine;
 using UdonSharp;
@@ -40,7 +41,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PRIVATE FIELDS
 
-        private int _matrixID;
+        private int _offsetVectorID;
 
         private VRCStation _playerStation;
         private VRCPlayerApi _localPlayer;
@@ -73,8 +74,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
-            _matrixID = VRCShader.PropertyToID("_Udon_FO_WorldMatrix");
-            VRCShader.SetGlobalMatrix(_matrixID, Matrix4x4.TRS(anchor.position, Quaternion.identity, Vector3.one));
+            _offsetVectorID = VRCShader.PropertyToID("_Udon_FO_WorldOffset");
+            VRCShader.SetGlobalVector(_offsetVectorID, anchor.position);
 
             _localPlayer = Networking.LocalPlayer;
 
@@ -144,9 +145,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             Vector3 playerPos = _trackingData.position;
             if (playerPos.magnitude < DistanceMoveThreshold) return;
 
-            // Move world and reparent children
+            // Move world
             transform.Translate(-playerPos);
 
+            // Move player
             if (!InExternalStation)
             {
                 Vector3 playerVelocity = _localPlayer.GetVelocity();
@@ -155,6 +157,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
                 _localPlayer.SetVelocity(playerVelocity);
             }
 
+            // Reparent children to avoid large local positions on colliders and stuff near the player.
             transform.DetachChildren();
             transform.position = Vector3.zero;
             for (int i = 0; i < _rootObjects.Length; i++)
@@ -163,9 +166,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             for (int i = 0; i < _dynamicObjects.Length; i++)
                 _dynamicObjects[i].SetParent(transform);
 
-            NotifyListeners(anchor.position);
-
-            VRCShader.SetGlobalMatrix(_matrixID, Matrix4x4.TRS(anchor.position, Quaternion.identity, Vector3.one));
+            // Brag about it
+            Vector3 anchorPos = anchor.position;
+            NotifyListeners(anchorPos);
+            VRCShader.SetGlobalVector(_offsetVectorID, anchorPos);
 
 #if DO_LOGGING
             _printSuccess($"Moved origin {playerPos.magnitude}m");
