@@ -22,6 +22,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public float RotationSmoothing = 0.1f;
         [Tooltip("Vector3.Lerp")]
         public float PositionSmoothing = 0.07f;
+        [Tooltip("How often the player station should request serialization. Measured in seconds.")]
+        public float SyncRate = 0.1f;
 
         [Header("Distance Move Options:")]
         [Tooltip("The minimum distance (meters) from the origin that is required before moving the world.")]

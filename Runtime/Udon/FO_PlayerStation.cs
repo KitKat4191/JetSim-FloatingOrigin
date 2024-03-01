@@ -37,6 +37,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private float _positionSmoothing = 0.07f;
         private float _rotationSmoothing = 0.1f;
 
+        private float _timeSinceLastSerialization;
+        private float _syncRate = 0.1f;
+
         #endregion // PRIVATE FIELDS
 
         #region NETWORKING
@@ -53,7 +56,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// <remarks>
         /// UdonSynced
         /// </remarks>
-        [UdonSynced] private short _syncedPlayerRotation = 0;
+        [UdonSynced] private short _playerRotation_Y = 0;
         private Quaternion _playerRotation = Quaternion.identity;
         private Quaternion _smoothPlayerRotation = Quaternion.identity;
 
@@ -72,11 +75,17 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private void Start()
         {
             _anchor = FO_Manager.anchor;
+            _syncRate = FO_Manager.SyncRate;
         }
 
         private void Update()
         {
-            if (_localPlayerIsOwner) { RequestSerialization(); return; }
+            if (_localPlayerIsOwner)
+            {
+                _timeSinceLastSerialization += Time.deltaTime;
+                if (_timeSinceLastSerialization > _syncRate) { RequestSerialization(); _timeSinceLastSerialization = 0; }
+                return;
+            }
             
             // Remote players need to interpolate the position and rotation.
             _smoothPlayerPosition = Vector3.Lerp(_smoothPlayerPosition, _playerPosition, _positionSmoothing);
@@ -109,22 +118,21 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
             _playerPosition = Owner.GetPosition() - _anchor.position;
-            _syncedPlayerRotation = System.Convert.ToInt16(Owner.GetTrackingData(VRCPlayerApi.TrackingDataType.AvatarRoot).rotation.eulerAngles.y);
+            _playerRotation_Y = System.Convert.ToInt16(Owner.GetTrackingData(VRCPlayerApi.TrackingDataType.AvatarRoot).rotation.eulerAngles.y);
         }
         public override void OnDeserialization(DeserializationResult result)
         {
-            _playerRotation = Quaternion.Euler(0, _syncedPlayerRotation, 0);
+            _playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
 
             if (!_flagDiscontinuity) return;
 #if DO_LOGGING
             _print($"Discontinuity triggered.");
 #endif
 
-            _smoothPlayerRotation = _playerRotation;
-            transform.rotation = _playerRotation;
+            // Skip interpolation
 
             _smoothPlayerPosition = _playerPosition;
-            transform.position = _playerPosition + _anchor.position;
+            _smoothPlayerRotation = _playerRotation;
         }
         public override void OnPostSerialization(SerializationResult result)
         {
