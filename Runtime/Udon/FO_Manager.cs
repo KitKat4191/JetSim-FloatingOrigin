@@ -41,7 +41,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PRIVATE FIELDS
 
-        private int _offsetVectorID;
+        private int _VRCShaderPropertyID;
 
         private VRCStation _playerStation;
         private VRCPlayerApi _localPlayer;
@@ -56,7 +56,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         #endregion // PRIVATE FIELDS
 
         #region FIELD VALIDATION
-#if UNITY_EDITOR && !COMPILER_UDONSHARP
+
         private void OnValidate()
         {
             RotationSmoothing = Mathf.Clamp(RotationSmoothing, 0f, 1f);
@@ -65,7 +65,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             DistanceMoveThreshold = Mathf.Clamp(DistanceMoveThreshold, 0f, float.MaxValue);
             SecondsBetweenDistanceCheck = Mathf.Clamp(SecondsBetweenDistanceCheck, 0f, float.MaxValue);
         }
-#endif
+
         #endregion // FIELD VALIDATION
 
         ////////////////
@@ -74,8 +74,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
-            _offsetVectorID = VRCShader.PropertyToID("_Udon_FO_WorldOffset");
-            VRCShader.SetGlobalVector(_offsetVectorID, anchor.position);
+            _VRCShaderPropertyID = VRCShader.PropertyToID("_Udon_FO_WorldOffset");
+            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchor.position);
 
             _localPlayer = Networking.LocalPlayer;
 
@@ -169,7 +169,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             // Brag about it
             Vector3 anchorPos = anchor.position;
             NotifyListeners(anchorPos);
-            VRCShader.SetGlobalVector(_offsetVectorID, anchorPos);
+            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
 
 #if DO_LOGGING
             _printSuccess($"Moved origin {playerPos.magnitude}m");
