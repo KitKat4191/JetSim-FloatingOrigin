@@ -11,7 +11,6 @@ using Cyan.PlayerObjectPool;
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     [AddComponentMenu("")]
-    [DefaultExecutionOrder(10)]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class FO_PlayerStation : CyanPlayerObjectPoolObject
     {
@@ -26,23 +25,20 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private Transform _anchor;
 
-        private bool _localPlayerIsOwner = false;
+        private bool _localPlayerIsOwner;
 
         
         /// <summary>
         /// If the local local player is in the FO_PlayerStation.
         /// </summary>
-        private bool _localPlayerSeated = false;
-
-        private float _positionSmoothing = 0.07f;
-        private float _rotationSmoothing = 0.1f;
+        private bool _localPlayerSeated;
 
         private float _timeSinceLastSerialization;
-        private float _syncRate = 0.1f;
+        private const float _SYNC_RATE = 0.25f;
 
         #endregion // PRIVATE FIELDS
 
-        #region NETWORKING
+        #region SYNCED FIELDS
 
         /// <summary>
         /// Controls interpolation on remote.
@@ -50,8 +46,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// <remarks>
         /// True = no interpolation this serialization.
         /// Gets reset to false each network tick.
+        /// This is True by default so we don't interpolate when a player is assigned.
         /// </remarks>
-        [UdonSynced] private bool _flagDiscontinuity = false;
+        [UdonSynced] private bool _flagDiscontinuity = true;
 
         /// <remarks>
         /// UdonSynced
@@ -66,7 +63,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         [UdonSynced] private Vector3 _playerPosition = Vector3.zero;
         private Vector3 _smoothPlayerPosition = Vector3.zero;
 
-        #endregion // NETWORKING
+        #endregion // SYNCED FIELDS
 
         ////////////////
 
@@ -75,42 +72,27 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private void Start()
         {
             _anchor = FO_Manager.anchor;
-            _syncRate = FO_Manager.SyncRate;
         }
 
         private void Update()
         {
-            if (_localPlayerIsOwner)
-            {
-                _timeSinceLastSerialization += Time.deltaTime;
-                if (_timeSinceLastSerialization > _syncRate) { RequestSerialization(); _timeSinceLastSerialization = 0; }
-                return;
-            }
-            
-            // Remote players need to interpolate the position and rotation.
-            _smoothPlayerPosition = Vector3.Lerp(_smoothPlayerPosition, _playerPosition, _positionSmoothing);
-            _smoothPlayerRotation = Quaternion.Slerp(_smoothPlayerRotation, _playerRotation, _rotationSmoothing);
-
-            transform.SetPositionAndRotation(
-                _smoothPlayerPosition + _anchor.position,
-                _smoothPlayerRotation
-            );
+            if (_localPlayerIsOwner) HandleSerialization(); else HandleInterpolation();
         }
 
         #endregion // UNITY
 
-        #region API
-
-        // TODO: remove this
-        public void _SetInterpolationSettings(float newPositionSmoothing, float newRotationSmoothing)
+        private void HandleSerialization()
         {
-            _positionSmoothing = newPositionSmoothing;
-            _rotationSmoothing = newRotationSmoothing;
-
+            _timeSinceLastSerialization += Time.deltaTime;
+            if (_timeSinceLastSerialization < _SYNC_RATE) return;
+            _timeSinceLastSerialization = 0;
             RequestSerialization();
         }
 
-        #endregion API
+        private void HandleInterpolation()
+        {
+            
+        }
 
         #region NETWORKING OVERRIDES
 
@@ -143,7 +125,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PLAYER OBJECT POOL OVERRIDES
 
-        public override void _OnCleanup() { }
+        public override void _OnCleanup() => _flagDiscontinuity = true;
         public override void _OnOwnerSet()
         {
             if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
@@ -157,9 +139,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.Immobilize;
 
             if (!_localPlayerIsOwner) return;
-
-            _rotationSmoothing = FO_Manager.RotationSmoothing;
-            _positionSmoothing = FO_Manager.PositionSmoothing;
 
             FO_Manager._RegisterPlayerStation(this);
 
