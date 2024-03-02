@@ -17,19 +17,11 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
     {
         #region PUBLIC FIELDS
 
-        [Header("Player Sync Options:")]
-        [Tooltip("Quaternion.Slerp")]
-        public float RotationSmoothing = 0.1f;
-        [Tooltip("Vector3.Lerp")]
-        public float PositionSmoothing = 0.07f;
-        [Tooltip("How often the player station should request serialization. Measured in seconds.")]
-        public float SyncRate = 0.1f;
-
-        [Header("Distance Move Options:")]
+        [Header("Settings")]
         [Tooltip("The minimum distance (meters) from the origin that is required before moving the world.")]
         public float DistanceMoveThreshold = 100;
         [Tooltip("How often the player's distance from the origin is measured.")]
-        public float SecondsBetweenDistanceCheck = 3;
+        public float SecondsPerDistanceCheck = 3;
 
         [Space]
         public Transform anchor;
@@ -61,11 +53,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void OnValidate()
         {
-            RotationSmoothing = Mathf.Clamp(RotationSmoothing, 0f, 1f);
-            PositionSmoothing = Mathf.Clamp(PositionSmoothing, 0f, 1f);
-
             DistanceMoveThreshold = Mathf.Clamp(DistanceMoveThreshold, 0f, float.MaxValue);
-            SecondsBetweenDistanceCheck = Mathf.Clamp(SecondsBetweenDistanceCheck, 0f, float.MaxValue);
+            SecondsPerDistanceCheck = Mathf.Clamp(SecondsPerDistanceCheck, 0f, float.MaxValue);
         }
 
         #endregion // FIELD VALIDATION
@@ -132,8 +121,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             LocalPlayerStation = playerStation;
             _playerStation = LocalPlayerStation.GetComponent<VRCStation>();
 
-            playerStation._SetInterpolationSettings(PositionSmoothing, RotationSmoothing);
-
             StartDistanceCheckLoop();
         }
 
@@ -147,10 +134,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             Vector3 playerPos = _trackingData.position;
             if (playerPos.magnitude < DistanceMoveThreshold) return;
 
-            // Move world
+            // Move the world
             transform.Translate(-playerPos);
 
-            // Move player
+            // Move the player
             if (!InExternalStation)
             {
                 Vector3 playerVelocity = _localPlayer.GetVelocity();
@@ -168,7 +155,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             for (int i = 0; i < _dynamicObjects.Length; i++)
                 _dynamicObjects[i].SetParent(transform);
 
-            // Brag about it
             Vector3 anchorPos = anchor.position;
             NotifyListeners(anchorPos);
             VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
@@ -204,7 +190,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _DistanceCheckLoop()
         {
             _DistanceCheck();
-            SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsBetweenDistanceCheck);
+            SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsPerDistanceCheck);
         }
 
         private void NotifyListeners(Vector3 newOriginOffset)
@@ -220,8 +206,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private static T[] AddUnique<T>(T[] array, T item)
         {
+            if (item == null) return array;
             int index = System.Array.IndexOf(array, item);
-            if (index > -1) return array; // The item is already in the array so we don't add it.
+            if (index > -1) return array; // The item is already in the array.
 
             var temp = new T[array.Length + 1];
 
