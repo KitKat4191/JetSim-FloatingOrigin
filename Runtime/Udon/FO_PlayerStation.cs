@@ -139,7 +139,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PLAYOUT DELAY BUFFER
 
-        private const int _BUFFER_SIZE = 5;
+        private const int _BUFFER_SIZE = 20;
 
         /// <summary>
         /// This points to the last slot that was written to.
