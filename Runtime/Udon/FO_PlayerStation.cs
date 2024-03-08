@@ -28,6 +28,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private Transform _anchor;
 
         private bool _localPlayerIsOwner;
+        private bool _isOwnerInVR;
 
         
         /// <summary>
@@ -88,7 +89,14 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void HandleInterpolation()
         {
-            float simulationTime = Networking.SimulationTime(Owner);
+            float simulationTime;
+
+            if (_isOwnerInVR)
+            {
+                _smoothNetworkTime = Mathf.SmoothDamp(_smoothNetworkTime, _networkTime, ref _networkVelocity, 0.2f);
+                simulationTime = Time.realtimeSinceStartup - _smoothNetworkTime - 0.5f;
+            }
+            else simulationTime = Networking.SimulationTime(Owner);
 
             GetIndexLeftAndRightOf(time: simulationTime, out int left, out int right);
 
@@ -116,6 +124,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         }
         public override void OnDeserialization(DeserializationResult result)
         {
+            if (_isOwnerInVR) _networkTime = Time.realtimeSinceStartup - result.sendTime;
+
             var _playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
 
             Capture(
@@ -139,7 +149,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PLAYOUT DELAY BUFFER
 
-        private const int _BUFFER_SIZE = 20;
+        private const int _BUFFER_SIZE = 10;
 
         /// <summary>
         /// This points to the last slot that was written to.
@@ -192,6 +202,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             }
         }
 
+        private float _networkTime;
+        private float _smoothNetworkTime;
+        private float _networkVelocity;
+
         #endregion // PLAYOUT DELAY BUFFER
 
         #region PLAYER OBJECT POOL OVERRIDES
@@ -202,6 +216,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
 
             _localPlayerIsOwner = Owner.isLocal;
+            _isOwnerInVR = Owner.IsUserInVR();
 
 #if DO_LOGGING
             _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
