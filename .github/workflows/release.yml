@@ -55,7 +55,7 @@ jobs:
 
       # Zip the Package for release
       - name: Create Package Zip
-        working-directory: "${{ env.packagePath }}"
+        working-directory: "${{ vars.PACKAGE_NAME }}"
         run: |
           zip -r "${{ env.zipFile }}" .
           echo "workspace=${{ github.workspace }}" >> $GITHUB_ENV
