@@ -60,7 +60,7 @@ jobs:
       
       # Build a list of .meta files for future use
       - name: Track Package Meta Files
-        run: find "" -name \*.meta >> metaList
+        run: find "/" -name \*.meta >> metaList
       
       # Make a UnityPackage version of the Package for release
       - name: Create UnityPackage
