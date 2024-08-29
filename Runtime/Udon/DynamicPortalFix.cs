@@ -36,7 +36,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (!other) return;
             if (!other.gameObject) return;
-            if (other.name != "PortalInternalDynamic(Clone)") return;
+            if (other.name != "PortalInternal(Clone)") return;
 
             if (_portal == other.gameObject) return; // It's the same portal lmao
 
@@ -47,14 +47,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             _portalTransform = other.transform;
             _portalTransform.SetParent(_anchor);
-
-            // Fix the portal's particle simulation space
-            var particles = other.GetComponentsInChildren<ParticleSystem>();
-            foreach (var particle in particles)
-            {
-                var partMain = particle.main;
-                partMain.simulationSpace = ParticleSystemSimulationSpace.Local;
-            }
 
             _delayCounter = 0;
 
@@ -69,6 +61,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             _delayCounter++;
             _portalData = _portalTMPro.text;
+            
             // Check if the placeholder format text has been replaced with the real content.
             if (!_portalData.StartsWith("[world]")) { FetchData(); return; }
             
