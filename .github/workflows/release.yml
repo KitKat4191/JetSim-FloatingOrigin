@@ -43,7 +43,7 @@ jobs:
         id: version
         uses: zoexx/github-action-json-file-properties@b9f36ce6ee6fe2680cd3c32b2c62e22eade7e590
         with: 
-            file_path: "${{ env.packagePath }}/package.json"
+            file_path: "package.json"
             prop_path: "version"
     
       # Configure the Environment Variables needed for releasing the Package
