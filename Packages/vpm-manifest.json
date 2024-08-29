@@ -1,0 +1,66 @@
+{
+  "dependencies": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.21"
+    },
+    "dev.onevr.vrworldtoolkit": {
+      "version": "2.1.5"
+    },
+    "com.miner28.networked-event-caller": {
+      "version": "3.0.5"
+    },
+    "com.cyan.playerobjectpool": {
+      "version": "1.1.2"
+    },
+    "com.vrchat.worlds": {
+      "version": "3.5.0"
+    },
+    "com.livedimensions.vrrefassist": {
+      "version": "0.0.6"
+    },
+    "com.happyrobot33.vrcsdkdocumentation": {
+      "version": "0.0.2"
+    }
+  },
+  "locked": {
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.28",
+      "dependencies": {}
+    },
+    "dev.onevr.vrworldtoolkit": {
+      "version": "2.1.5",
+      "dependencies": {
+        "com.vrchat.base": "^3.2.x"
+      }
+    },
+    "com.miner28.networked-event-caller": {
+      "version": "3.1.13",
+      "dependencies": {}
+    },
+    "com.cyan.playerobjectpool": {
+      "version": "1.1.2",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.1.x",
+        "com.vrchat.udonsharp": "^1.1.x"
+      }
+    },
+    "com.vrchat.worlds": {
+      "version": "3.5.0",
+      "dependencies": {
+        "com.vrchat.base": "3.5.0"
+      }
+    },
+    "com.vrchat.base": {
+      "version": "3.5.0",
+      "dependencies": {}
+    },
+    "com.livedimensions.vrrefassist": {
+      "version": "0.0.6",
+      "dependencies": {}
+    },
+    "com.happyrobot33.vrcsdkdocumentation": {
+      "version": "0.0.2",
+      "dependencies": {}
+    }
+  }
+}
