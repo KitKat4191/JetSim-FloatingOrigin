@@ -56,7 +56,9 @@ jobs:
       # Zip the Package for release
       - name: Create Package Zip
         working-directory: "${{ env.packagePath }}"
-        run: zip -r "${{ github.workspace }}/${{ env.zipFile }}" .
+        run: |
+          zip -r "${{ env.zipFile }}" .
+          echo "workspace=${{ github.workspace }}" >> $GITHUB_ENV
       
       # Build a list of .meta files for future use
       - name: Track Package Meta Files
