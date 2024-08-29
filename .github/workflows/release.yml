@@ -30,7 +30,7 @@ jobs:
     permissions:
       contents: write
     env:
-      packagePath: ${{ vars.PACKAGE_NAME }}
+      packagePath: Packages/${{ vars.PACKAGE_NAME }}
     if: needs.config.outputs.config_package == 'true'
     steps:
 
