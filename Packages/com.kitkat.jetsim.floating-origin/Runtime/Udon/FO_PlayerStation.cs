@@ -8,7 +8,6 @@ using VRC.SDKBase;
 using UdonSharp;
 
 using VRRefAssist;
-using Cyan.PlayerObjectPool;
 
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
@@ -18,7 +17,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
     {
         #region VRRefAssist
 
-        [SerializeField, HideInInspector] private FO_Manager FO_Manager;
+        [SerializeField, HideInInspector] private FO_Manager manager;
         [SerializeField, HideInInspector, GetComponent] private VRCStation station;
 
         #endregion // VRRefAssist
@@ -73,7 +72,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             _localPlayerIsOwner = _owner.isLocal;
             _isOwnerInVR = _owner.IsUserInVR();
             
-            _anchor = FO_Manager.anchor;
+            _anchor = manager.anchor;
 
 #if DO_LOGGING
             _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
@@ -83,7 +82,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             if (!_localPlayerIsOwner) return;
 
-            FO_Manager._RegisterPlayerStation(this);
+            manager._RegisterPlayerStation(this);
 
             _ForcePlayerInStationLoop();
 
@@ -122,8 +121,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             float interpolation = _discontinuityFlagBuffer[right] ? 1 : Mathf.InverseLerp(_timestampBuffer[left], _timestampBuffer[right], simulationTime);
 
-            var position = Vector3.Lerp(_positionBuffer[left], _positionBuffer[right], interpolation);
-            var rotation = Quaternion.Slerp(_rotationBuffer[left], _rotationBuffer[right], interpolation);
+            Vector3 position = Vector3.Lerp(_positionBuffer[left], _positionBuffer[right], interpolation);
+            Quaternion rotation = Quaternion.Slerp(_rotationBuffer[left], _rotationBuffer[right], interpolation);
 
             transform.SetPositionAndRotation(
                 position + _anchor.position,
@@ -146,7 +145,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (_isOwnerInVR) _networkTime = Time.realtimeSinceStartup - result.sendTime;
 
-            var playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
+            Quaternion playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
 
             Capture(
                 position: _playerPosition,
@@ -281,7 +280,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             SendCustomEventDelayedFrames(nameof(_ForcePlayerInStationLoop), 1);
 
-            FO_Manager.SendCustomEventDelayedFrames(nameof(Runtime.FO_Manager._DistanceCheck), 1);
+            manager.SendCustomEventDelayedFrames(nameof(Runtime.FO_Manager._DistanceCheck), 1);
         }
 
         public override void OnPlayerRespawn(VRCPlayerApi player)
@@ -305,7 +304,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _ForcePlayerInStationLoop()
         {
             if (_localPlayerSeated) return;
-            if (FO_Manager.InExternalStation) return;
+            if (manager.InExternalStation) return;
             SendCustomEventDelayedSeconds(nameof(_ForcePlayerInStationLoop), 0.5f, VRC.Udon.Common.Enums.EventTiming.LateUpdate);
 
             ForcePlayerBackIn();
@@ -313,7 +312,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void ForcePlayerBackIn()
         {
-            if (FO_Manager.InExternalStation)
+            if (manager.InExternalStation)
             {
                 #if DO_LOGGING
                 _printWarning("_ForcePlayerBackIn aborted : _localPlayer is in an external station.");
