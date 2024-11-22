@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 346172806761492650}
+  - component: {fileID: 3693207079928400894}
   - component: {fileID: 346172806761492651}
   - component: {fileID: 346172806761492648}
   - component: {fileID: 346172806761492649}
@@ -26,13 +27,26 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 346172806761492652}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3693207079928400894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346172806761492652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1658641376, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &346172806761492651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,16 +89,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 346172806761492649}
-  floatingOriginDistanceThreshold: 10
-  secondsBetweenChecks: 5
-  positionSmoothing: 0.07
-  rotationSmoothing: 0.1
-  syncRate: 0
-  printDebugMessages: 1
-  _udonConsole: {fileID: 0}
-  floatingOriginManager_SINGLETON: {fileID: 0}
+  FO_Manager: {fileID: 0}
   station: {fileID: 0}
-  worldParent: {fileID: 0}
 --- !u!114 &346172806761492649
 MonoBehaviour:
   m_ObjectHideFlags: 0
