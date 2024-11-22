@@ -1,5 +1,5 @@
 
-#define DO_LOGGING
+//#define DO_LOGGING
 
 using UnityEngine;
 
