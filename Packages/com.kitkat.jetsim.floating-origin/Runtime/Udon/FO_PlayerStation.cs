@@ -146,11 +146,11 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (_isOwnerInVR) _networkTime = Time.realtimeSinceStartup - result.sendTime;
 
-            var _playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
+            var playerRotation = Quaternion.Euler(0, _playerRotation_Y, 0);
 
             Capture(
                 position: _playerPosition,
-                rotation: _playerRotation,
+                rotation: playerRotation,
                 discontinuity: _flagDiscontinuity,
                 timestamp: result.sendTime
             );
