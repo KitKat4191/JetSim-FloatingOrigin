@@ -14,7 +14,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     [AddComponentMenu("")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class FO_PlayerStation : CyanPlayerObjectPoolObject
+    public class FO_PlayerStation : UdonSharpBehaviour
     {
         #region VRRefAssist
 
@@ -27,6 +27,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private Transform _anchor;
 
+        private VRCPlayerApi Owner;
         private bool _localPlayerIsOwner;
         private bool _isOwnerInVR;
 
@@ -67,7 +68,26 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
+            Owner = Networking.GetOwner(gameObject);
+            
+            _localPlayerIsOwner = Owner.isLocal;
+            _isOwnerInVR = Owner.IsUserInVR();
+            
             _anchor = FO_Manager.anchor;
+
+#if DO_LOGGING
+            _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
+#endif
+
+            station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.Immobilize;
+
+            if (!_localPlayerIsOwner) return;
+
+            FO_Manager._RegisterPlayerStation(this);
+
+            _ForcePlayerInStationLoop();
+
+            RequestSerialization();
         }
 
         private void Update()
@@ -207,34 +227,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private float _networkVelocity;
 
         #endregion // PLAYOUT DELAY BUFFER
-
-        #region PLAYER OBJECT POOL OVERRIDES
-
-        public override void _OnCleanup() => _flagDiscontinuity = true;
-        public override void _OnOwnerSet()
-        {
-            if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
-
-            _localPlayerIsOwner = Owner.isLocal;
-            _isOwnerInVR = Owner.IsUserInVR();
-
-#if DO_LOGGING
-            _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
-#endif
-
-            station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.Immobilize;
-
-            if (!_localPlayerIsOwner) return;
-
-            FO_Manager._RegisterPlayerStation(this);
-
-            _ForcePlayerInStationLoop();
-
-            RequestSerialization();
-        }
-
-        #endregion // PLAYER OBJECT POOL OVERRIDES
-
+        
         #region FLOATING ORIGIN EVENTS
 
         public void _OnEnterExternalStation()
