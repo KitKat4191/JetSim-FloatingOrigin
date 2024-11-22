@@ -27,7 +27,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private Transform _anchor;
 
-        private VRCPlayerApi Owner;
+        private VRCPlayerApi _owner;
         private bool _localPlayerIsOwner;
         private bool _isOwnerInVR;
 
@@ -68,10 +68,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
-            Owner = Networking.GetOwner(gameObject);
+            _owner = Networking.GetOwner(gameObject);
             
-            _localPlayerIsOwner = Owner.isLocal;
-            _isOwnerInVR = Owner.IsUserInVR();
+            _localPlayerIsOwner = _owner.isLocal;
+            _isOwnerInVR = _owner.IsUserInVR();
             
             _anchor = FO_Manager.anchor;
 
@@ -116,7 +116,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
                 _smoothNetworkTime = Mathf.SmoothDamp(_smoothNetworkTime, _networkTime, ref _networkVelocity, 0.2f);
                 simulationTime = Time.realtimeSinceStartup - _smoothNetworkTime - 0.5f;
             }
-            else simulationTime = Networking.SimulationTime(Owner);
+            else simulationTime = Networking.SimulationTime(_owner);
 
             GetIndexLeftAndRightOf(time: simulationTime, out int left, out int right);
 
@@ -137,10 +137,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         public override void OnPreSerialization()
         {
-            if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
+            if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
-            _playerPosition = Owner.GetPosition() - _anchor.position;
-            _playerRotation_Y = System.Convert.ToInt16(Owner.GetTrackingData(VRCPlayerApi.TrackingDataType.AvatarRoot).rotation.eulerAngles.y);
+            _playerPosition = _owner.GetPosition() - _anchor.position;
+            _playerRotation_Y = System.Convert.ToInt16(_owner.GetTrackingData(VRCPlayerApi.TrackingDataType.AvatarRoot).rotation.eulerAngles.y);
         }
         public override void OnDeserialization(DeserializationResult result)
         {
@@ -269,7 +269,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public override void OnStationExited(VRCPlayerApi player)
         {
             if (!_localPlayerIsOwner) return;
-            if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
+            if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
             #if DO_LOGGING
             _print("Exited FO_PlayerStation");
@@ -287,7 +287,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public override void OnPlayerRespawn(VRCPlayerApi player)
         {
             if (!_localPlayerIsOwner) return;
-            if (!VRC.SDKBase.Utilities.IsValid(Owner)) return;
+            if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
             #if DO_LOGGING
             _print("Local Player Respawned.");
@@ -295,7 +295,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             _flagDiscontinuity = true;
 
-            Owner.UseAttachedStation();
+            _owner.UseAttachedStation();
         }
 
         #endregion // VRC OVERRIDES
@@ -331,7 +331,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
                 return;
             }
 
-            Owner.UseAttachedStation();
+            _owner.UseAttachedStation();
         }
 
         #endregion // FORCE PLAYER IN
