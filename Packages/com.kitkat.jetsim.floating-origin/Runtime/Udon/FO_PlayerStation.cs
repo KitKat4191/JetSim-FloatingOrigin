@@ -67,6 +67,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
+            transform.parent = null;
+            
             _owner = Networking.GetOwner(gameObject);
             
             _localPlayerIsOwner = _owner.isLocal;
