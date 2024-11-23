@@ -37,7 +37,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         /// </returns>
         private static bool AddPrefabToScene()
         {
-            var manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>();
+            var manager = Object.FindObjectOfType<FO_Manager>(true);
             if (manager)
             {
                 FO_Debugger.LogWarning("Prefab was already present in the scene!", manager);
@@ -50,7 +50,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             GameObject prefab = PrefabUtility.InstantiatePrefab(asset) as GameObject;
             Undo.RegisterCreatedObjectUndo(prefab, "Created FloatingOrigin Prefab");
 
-            manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>();
+            manager = Object.FindObjectOfType<FO_Manager>(true);
             Selection.activeObject = manager;
             EditorGUIUtility.PingObject(manager);
 
@@ -63,7 +63,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             if (objects == null) return;
             if (objects.Length == 0) return;
 
-            var manager = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().transform;
+            var manager = Object.FindObjectOfType<FO_Manager>(true).transform;
             foreach (Transform t in objects) { t.parent = manager; }
         }
 
@@ -75,7 +75,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         /// </returns>
         public static bool ValidateParticleSystems()
         {
-            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p =>
+            ParticleSystem[] particleSystems = Object.FindObjectsOfType<ParticleSystem>(true).Where(p =>
                     p.main.simulationSpace == ParticleSystemSimulationSpace.Custom &&
                     p.main.customSimulationSpace == null
                 ).ToArray();
@@ -106,7 +106,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             {
                 var particleSystemMain = particle.main;
                 particleSystemMain.simulationSpace = space;
-                FO_Debugger.Log($"Updated simulation space.", particle);
+                FO_Debugger.Log("Updated simulation space.", particle);
             }
 
             FO_Debugger.LogSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
