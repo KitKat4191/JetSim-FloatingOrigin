@@ -10,9 +10,10 @@ using VRC.SDKBase;
 using UdonSharpEditor;
 
 using KitKat.JetSim.FloatingOrigin.Runtime;
-
+using VRC.SDK3.Components;
 using VRRefAssist;
-using VRRefAssist.Editor.Extensions;
+
+using VRCStation = VRC.SDKBase.VRCStation;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
@@ -31,7 +32,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         public static void DisableStatics()
         {
-            var objects = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<GameObject>();
+            var objects = FindObjectsOfType<GameObject>(true);
             foreach (var obj in objects) { obj.isStatic = false; }
             FO_Debugger.LogSuccess("Cleared All Static Flags.");
         }
@@ -40,7 +41,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         public static void SetUpStationNotifiers()
         {
-            VRCStation[] stations = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRCStation>();
+            VRCStation[] stations = FindObjectsOfType<VRCStation>(true);
             stations = stations.Where(s => s.GetComponent<FO_PlayerStation>() == null).ToArray();
             
             if (stations.Length == 0) return;
@@ -53,7 +54,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             FO_Debugger.LogSuccess($"Created {stations.Length} StationNotifier{(stations.Length > 1 ? "s" : "")}.");
 
             // Match the sync mode to the existing behaviours on the station.
-            var notifiers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_StationNotifier>();
+            var notifiers = FindObjectsOfType<FO_StationNotifier>(true);
             foreach (var notifier in notifiers)
             {
                 UdonBehaviour backingNotifier = UdonSharpEditorUtility.GetBackingUdonBehaviour(notifier);
@@ -72,7 +73,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         public static void RemoveAllStationNotifiers()
         {
-            var notifiers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_StationNotifier>();
+            var notifiers = FindObjectsOfType<FO_StationNotifier>(true);
             foreach (var notifier in notifiers)
                 UdonSharpEditorUtility.DestroyImmediate(notifier);
 
@@ -91,8 +92,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         /// </summary>
         public static void SetUpParticleSystems()
         {
-            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().anchor;
-            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => p.main.simulationSpace == ParticleSystemSimulationSpace.World).ToArray();
+            Transform anchor = FindObjectOfType<FO_Manager>(true).anchor;
+            ParticleSystem[] particleSystems = FindObjectsOfType<ParticleSystem>(true).Where(p => p.main.simulationSpace == ParticleSystemSimulationSpace.World).ToArray();
 
             foreach (ParticleSystem particle in particleSystems)
             {
@@ -110,8 +111,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         
         public static void RestoreParticleSimulationSpaces()
         {
-            Transform anchor = UnityEditorExtensions.FindObjectOfTypeIncludeDisabled<FO_Manager>().anchor;
-            ParticleSystem[] particleSystems = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<ParticleSystem>().Where(p => 
+            Transform anchor = FindObjectOfType<FO_Manager>(true).anchor;
+            ParticleSystem[] particleSystems = FindObjectsOfType<ParticleSystem>(true).Where(p => 
                 p.main.simulationSpace == ParticleSystemSimulationSpace.Custom &&
                 p.main.customSimulationSpace == anchor
             ).ToArray();
@@ -134,7 +135,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         private static bool UsingFloatingOrigin()
         {
-            FO_Manager[] floatingOriginManagers = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<FO_Manager>();
+            FO_Manager[] floatingOriginManagers = FindObjectsOfType<FO_Manager>(true);
 
             if (floatingOriginManagers.Length == 0) return false; // I'm assuming you don't want to use the floating origin system if you haven't set it up.
             if (floatingOriginManagers.Length > 1)
@@ -150,13 +151,13 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         {
             var settings = FO_Preferences.GetOrCreate();
 
-            var syncs = UnityEditorExtensions.FindObjectsOfTypeIncludeDisabled<VRC.SDK3.Components.VRCObjectSync>();
+            VRCObjectSync[] syncs = FindObjectsOfType<VRCObjectSync>(true);
             if (syncs.Length == 0) return false;
 
             if (settings.ShowObjectSyncWarning)
             {
-                FO_Debugger.LogWarning($"You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
-                foreach (var sync in syncs) { FO_Debugger.LogWarning("Click me to highlight the object with VRCObjectSync!", sync); }
+                FO_Debugger.LogWarning("You are using VRCObjectSync in your project! These objects will be desynced compared to the world and players. Is this intentional?");
+                foreach (VRCObjectSync sync in syncs) { FO_Debugger.LogWarning("Click me to highlight the object with VRCObjectSync!", sync); }
             }
 
             #region MODAL WINDOW
