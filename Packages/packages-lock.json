@@ -24,7 +24,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.livedimensions.vrrefassist": "0.0.10",
+        "com.livedimensions.vrrefassist": "1.0.0"
       }
     },
     "com.livedimensions.vrrefassist": {
