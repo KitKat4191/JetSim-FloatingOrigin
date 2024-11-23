@@ -109,7 +109,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
                 particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.Custom;
                 particleSystemMain.customSimulationSpace = anchor;
-                FO_Debugger.Log($"Updated simulation space.", particle);
+                FO_Debugger.Log("Updated simulation space.", particle);
                 EditorUtility.SetDirty(particle);
             }
 
@@ -129,7 +129,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             {
                 ParticleSystem.MainModule particleSystemMain = particle.main;
                 particleSystemMain.simulationSpace = ParticleSystemSimulationSpace.World;
-                FO_Debugger.Log($"Updated simulation space.", particle);
+                FO_Debugger.Log("Updated simulation space.", particle);
                 EditorUtility.SetDirty(particle);
             }
 
