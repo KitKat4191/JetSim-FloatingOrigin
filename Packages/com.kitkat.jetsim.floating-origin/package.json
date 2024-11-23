@@ -12,7 +12,6 @@
   "unityRelease": "31f1",
   "dependencies": {
     "com.livedimensions.vrrefassist": "0.0.10",
-    "com.cyan.playerobjectpool": "1.1.2"
   },
   "keywords": [
     "kitkat",

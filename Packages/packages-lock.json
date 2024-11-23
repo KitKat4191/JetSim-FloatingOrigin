@@ -25,7 +25,6 @@
       "source": "embedded",
       "dependencies": {
         "com.livedimensions.vrrefassist": "0.0.10",
-        "com.cyan.playerobjectpool": "1.1.2"
       }
     },
     "com.livedimensions.vrrefassist": {
