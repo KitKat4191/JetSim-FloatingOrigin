@@ -28,6 +28,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             RemoveAllStationNotifiers();
             SetUpStationNotifiers();
             SetUpParticleSystems();
+            ConfigureSceneDescriptor();
         }
 
         public static void DisableStatics()
@@ -35,6 +36,13 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             var objects = FindObjectsOfType<GameObject>(true);
             foreach (var obj in objects) { obj.isStatic = false; }
             FO_Debugger.LogSuccess("Cleared All Static Flags.");
+        }
+
+        private static void ConfigureSceneDescriptor()
+        {
+            var descriptor = FindObjectOfType<VRC_SceneDescriptor>(true);
+            descriptor.RespawnHeightY = -1000000f;
+            EditorUtility.SetDirty(descriptor);
         }
 
         #region STATION NOTIFIERS
