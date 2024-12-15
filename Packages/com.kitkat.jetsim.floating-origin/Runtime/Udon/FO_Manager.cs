@@ -43,9 +43,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private bool _distanceCheckLoopStarted;
 
-        private FO_Listener[] _listeners = new FO_Listener[0];
+        private FO_Listener[] _listeners = System.Array.Empty<FO_Listener>();
 
-        private Transform[] _dynamicObjects = new Transform[0];
+        private Transform[] _dynamicObjects = System.Array.Empty<Transform>();
 
         #endregion // PRIVATE FIELDS
 
