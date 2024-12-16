@@ -25,10 +25,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         ////////////////////////
         
         [MenuItem(FOLDER_PATH + "Add Station Notifiers", priority = 120)]
-        private static void AddStationNotifiers() => FO_BuildValidator.SetUpStationNotifiers();
+        private static void AddStationNotifiers() => FO_BuildValidator.CreateStationNotifiers();
 
         [MenuItem(FOLDER_PATH + "Remove Station Notifiers", priority = 121)]
-        private static void RemoveStationNotifiers() => FO_BuildValidator.RemoveAllStationNotifiers();
+        private static void RemoveStationNotifiers() => FO_BuildValidator.RemoveStationNotifiers();
 
         ////////////////////////
 
