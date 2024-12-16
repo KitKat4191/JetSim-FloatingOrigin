@@ -30,7 +30,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             style.richText = true;
             style.fontSize = 17;
 
-            EditorGUILayout.TextArea("This script was automatically added by KitKat's <color=purple>Floating Origin</color>.", style);
+            EditorGUILayout.TextArea("This script was automatically added by KitKat's <color=#CC8080>Floating Origin</color>.", style);
         }
 
         private void MatchSyncMode(Object target)

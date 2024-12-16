@@ -24,9 +24,9 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         {
             if (!UsingFloatingOrigin()) return;
             if (FoundObjectSyncIssues()) return;
-
-            RemoveAllStationNotifiers();
-            SetUpStationNotifiers();
+            
+            CreateStationNotifiers();
+            UpdateStationNotifierSyncModes();
             SetUpParticleSystems();
             ConfigureSceneDescriptor();
         }
@@ -47,20 +47,36 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         #region STATION NOTIFIERS
 
-        public static void SetUpStationNotifiers()
+        public static void CreateStationNotifiers()
         {
             VRCStation[] stations = FindObjectsOfType<VRCStation>(true);
             stations = stations.Where(s => s.GetComponent<FO_PlayerStation>() == null).ToArray();
+            stations = stations.Where(s => s.GetComponent<FO_StationNotifier>() == null).ToArray();
             
             if (stations.Length == 0) return;
 
-            FO_Debugger.Log($"{stations.Length} stations found.");
+            FO_Debugger.Log($"{stations.Length} stations without notifiers found.");
 
             foreach (VRCStation station in stations)
-                station.gameObject.AddUdonSharpComponent(typeof(FO_StationNotifier));
+                station.gameObject.AddUdonSharpComponent<FO_StationNotifier>();
 
             FO_Debugger.LogSuccess($"Created {stations.Length} StationNotifier{(stations.Length > 1 ? "s" : "")}.");
+        }
 
+        public static void RemoveStationNotifiers()
+        {
+            var notifiers = FindObjectsOfType<FO_StationNotifier>(true);
+            foreach (var notifier in notifiers)
+                UdonSharpEditorUtility.DestroyImmediate(notifier);
+
+            if (notifiers.Length == 0)
+                FO_Debugger.Log("There were no StationNotifiers to remove.");
+            if (notifiers.Length > 0)
+                FO_Debugger.LogSuccess($"Removed {notifiers.Length} StationNotifier{(notifiers.Length > 1 ? "s" : "")}.");
+        }
+
+        public static void UpdateStationNotifierSyncModes()
+        {
             // Match the sync mode to the existing behaviours on the station.
             var notifiers = FindObjectsOfType<FO_StationNotifier>(true);
             foreach (var notifier in notifiers)
@@ -77,18 +93,6 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
                 backingNotifier.SyncMethod = syncType;
             }
-        }
-
-        public static void RemoveAllStationNotifiers()
-        {
-            var notifiers = FindObjectsOfType<FO_StationNotifier>(true);
-            foreach (var notifier in notifiers)
-                UdonSharpEditorUtility.DestroyImmediate(notifier);
-
-            if (notifiers.Length == 0)
-                FO_Debugger.Log("There were no StationNotifiers to remove.");
-            if (notifiers.Length > 0)
-                FO_Debugger.LogSuccess($"Removed {notifiers.Length} StationNotifier{(notifiers.Length > 1 ? "s" : "")}.");
         }
 
         #endregion // STATION NOTIFIERS

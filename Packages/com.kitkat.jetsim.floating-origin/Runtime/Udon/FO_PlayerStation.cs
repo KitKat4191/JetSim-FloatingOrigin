@@ -314,6 +314,12 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void ForcePlayerBackIn()
         {
+            #if UNITY_EDITOR
+            // This is a temporary workaround to VRChat breaking multiple scripts per GameObject as of SDK v3.7.4
+            // TODO: Has this been fixed yet? https://feedback.vrchat.com/udon/p/only-one-client-sim-udon-helper-gets-added-as-of-sdk-v374
+            return;
+            #endif
+            
             if (manager.InExternalStation)
             {
                 #if DO_LOGGING
