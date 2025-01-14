@@ -19,7 +19,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         private GameObject _portal;
         private Transform _portalTransform;
         
-        private TextMeshProUGUI _portalTMPro;
+        private TextMeshProUGUI[] _portalTMPro;
         private string _portalData;
 
         private VRCPlayerApi _localPlayer;
@@ -50,9 +50,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             _delayCounter = 0;
 
-            _portalTMPro = other.GetComponentInChildren<TextMeshProUGUI>(true);
-            if (!_portalTMPro) { Debug.LogError("Couldn't find NameTag's TextMeshProUGUI component!"); return; }
-
+            _portalTMPro = _portal.GetComponentsInChildren<TextMeshProUGUI>(true);
+            if (_portalTMPro == null || _portalTMPro.Length == 0) { Debug.LogError("Couldn't find any TextMeshProUGUI components on the portal!", this); return; }
+            if (_portalTMPro.Length < 2) { Debug.LogError("There were too few TMPro UGUI components on the portal. VRChat probably changed this again :("); }
+            
             SendCustomEventDelayedSeconds(nameof(_DelayedTextFetch), 0.1f);
         }
 
@@ -60,10 +61,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _DelayedTextFetch()
         {
             _delayCounter++;
-            _portalData = _portalTMPro.text;
+            _portalData = _portalTMPro[1].text; // 0: [world] 1: [owner] 2: [access] 3: [group] 4: [ageGate] 5: [0/10] 6: [countdown timer (30s)]
             
-            // Check if the placeholder format text has been replaced with the real content.
-            if (!_portalData.StartsWith("[world]")) { FetchData(); return; }
+            // Check if the placeholder text has been replaced with the real content.
+            if (!_portalData.StartsWith("[owner]")) { FetchData(); return; }
             
             if (_delayCounter >= 100) { Debug.LogError("Portal Data Fetch Timed Out"); return; }
             SendCustomEventDelayedSeconds(nameof(_DelayedTextFetch), 0.1f);
@@ -71,22 +72,15 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void FetchData()
         {
-            var content = _portalData.Split(new char[] { '\n', '\r' }, System.StringSplitOptions.RemoveEmptyEntries);
-            if (content.Length < 3)
-            {
-                Debug.LogError($"Content length mismatch! Length was {content.Length}.");
-                Debug.LogError($"Dumping Portal Data: {string.Join("\n", _portalData)}");
-                return;
-            }
+            string ownerName = _portalData;
 
-            string ownerName = content[1];
-
-            //Debug.Log($"Found Portal Owner Name: {ownerName} : after {_delayCounter} attempts.");
-            //Debug.Log($"Did we place the portal?: {ownerName == Networking.LocalPlayer.displayName}");
+            Debug.Log($"Found Portal Owner Name: {ownerName} : after {_delayCounter} attempts.");
 
             // Check if we placed the portal.
             if (ownerName != _localPlayer.displayName) return;
 
+            Debug.Log("The local player placed this portal! Syncing data...");
+            
             Networking.SetOwner(_localPlayer, gameObject);
             _portalPosition = _portalTransform.position - _anchor.position;
             RequestSerialization();
