@@ -1,7 +1,5 @@
 
-# JetSim - Floating Origin
-
-___
+# JetSim - Floating Origin [![Latest release](https://img.shields.io/github/v/release/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/latest) [![License](https://img.shields.io/github/license/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/blob/master/LICENSE)
 
 ![JetSim](https://raw.githubusercontent.com/KitKat4191/JetSim-VCC-Listing/main/Website/banner.png)
 
@@ -62,7 +60,7 @@ ___
 
 ___
 
-### General Info
+## General Info
 
 * The `VRC Scene Descriptor` that can be found on the `VRCWorld` object now has its `Respawn Height Y` set to `-1000000`. This is to prevent the player and pickups from constantly respawning when you travel downward quickly.
 * You now have a `WorldParent` object in your scene. You will need to parent all the objects that players will be able to see, walk on, interact with, etc. to this object.
@@ -71,3 +69,5 @@ ___
 * I recommend that you put objects that are close together in the world under a common parent. This is to reduce the amount of direct child objects on the `WorldParent`. Which in turn reduces how many objects I need to iterate over in U#.
 
 ___
+
+[![GitHub forks](https://img.shields.io/github/forks/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Fork)](https://github.com/KitKat4191/JetSim-FloatingOrigin/fork) [![GitHub stars](https://img.shields.io/github/stars/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Stars)](https://github.com/KitKat4191/JetSim-FloatingOrigin/stargazers)
