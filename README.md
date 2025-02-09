@@ -68,6 +68,4 @@ ___
 * For performance reasons It's important that you only parent objects to the `WorldParent` that actually need to move with the world.
 * I recommend that you put objects that are close together in the world under a common parent. This is to reduce the amount of direct child objects on the `WorldParent`. Which in turn reduces how many objects I need to iterate over in U#.
 
-___
-
 [![GitHub forks](https://img.shields.io/github/forks/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Fork)](https://github.com/KitKat4191/JetSim-FloatingOrigin/fork) [![GitHub stars](https://img.shields.io/github/stars/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Stars)](https://github.com/KitKat4191/JetSim-FloatingOrigin/stargazers)
