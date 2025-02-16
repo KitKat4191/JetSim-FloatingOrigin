@@ -1,5 +1,6 @@
 
-# JetSim - Floating Origin [![Latest release](https://img.shields.io/github/v/release/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/latest) [![License](https://img.shields.io/github/license/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/blob/master/LICENSE)
+# JetSim - Floating Origin
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/KitKat4191/JetSim-FloatingOrigin/release.yml)](https://github.com/KitKat4191/JetSim-FloatingOrigin/actions) [![Latest release](https://img.shields.io/github/v/release/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/latest) [![License](https://img.shields.io/github/license/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/blob/master/LICENSE)
 
 ![JetSim](https://raw.githubusercontent.com/KitKat4191/JetSim-VCC-Listing/main/Website/banner.png)
 
