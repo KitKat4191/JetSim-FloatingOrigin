@@ -80,7 +80,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
 #endif
 
-            station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.Immobilize;
+            station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.ImmobilizeForVehicle;
 
             if (!_localPlayerIsOwner) return;
 
