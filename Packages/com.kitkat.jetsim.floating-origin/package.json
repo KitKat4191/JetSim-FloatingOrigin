@@ -6,6 +6,7 @@
   "description": "A system for VRChat worlds that mitigates floating point issues by moving the world and player like a treadmill.",
   "author": {
     "name": "KitKat",
+    "email": "contact.kitkat4191@gmail.com",
     "url": "https://github.com/KitKat4191"
   },
   "unity": "2022.3",
