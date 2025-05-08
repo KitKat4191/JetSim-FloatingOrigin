@@ -68,5 +68,6 @@ ___
 * You can mark the `WorldParent` object as the [default parent](https://vrclibrary.com/wiki/books/whats-new-in-unity-2022/page/set-any-gameobject-as-default-parent) to make your life easier.
 * For performance reasons It's important that you only parent objects to the `WorldParent` that actually need to move with the world.
 * I recommend that you put objects that are close together in the world under a common parent. This is to reduce the amount of direct child objects on the `WorldParent`. Which in turn reduces how many objects I need to iterate over in U#.
+* There is a shader global that is updated every time the world moves. It is `_Udon_FO_WorldOffset` which is of type `float3`. It represents the current offset from the world-space origin. It is provided so advanced creators can align shaders that rely on world-space coordinates.
 
 [![GitHub forks](https://img.shields.io/github/forks/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Fork)](https://github.com/KitKat4191/JetSim-FloatingOrigin/fork) [![GitHub stars](https://img.shields.io/github/stars/KitKat4191/JetSim-FloatingOrigin.svg?style=social&label=Stars)](https://github.com/KitKat4191/JetSim-FloatingOrigin/stargazers)
