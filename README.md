@@ -1,6 +1,12 @@
 
-# JetSim - Floating Origin
-[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/KitKat4191/JetSim-FloatingOrigin/release.yml)](https://github.com/KitKat4191/JetSim-FloatingOrigin/actions) [![Latest release](https://img.shields.io/github/v/release/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/latest) [![License](https://img.shields.io/github/license/KitKat4191/JetSim-FloatingOrigin.svg)](https://github.com/KitKat4191/JetSim-FloatingOrigin/blob/master/LICENSE)
+<h1 align="center">JetSim - Floating Origin</h1>
+
+<div align=center>
+  <a href="https://github.com/KitKat4191/JetSim-FloatingOrigin/actions"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/KitKat4191/JetSim-FloatingOrigin/release.yml?style=for-the-badge"></a>
+  <a href="https://github.com/KitKat4191/JetSim-FloatingOrigin?tab=MIT-1-ov-file"><img alt="GitHub license" src="https://img.shields.io/github/license/KitKat4191/JetSim-FloatingOrigin?color=blue&style=for-the-badge"></a>
+  <a href="https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/latest/"><img alt="GitHub latest release" src="https://img.shields.io/github/v/release/KitKat4191/JetSim-FloatingOrigin?logo=unity&style=for-the-badge"></a>
+  <a href="https://github.com/KitKat4191/JetSim-FloatingOrigin/releases/"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/KitKat4191/JetSim-FloatingOrigin/total?color=blue&style=for-the-badge"></a>
+</div>
 
 ![JetSim](https://raw.githubusercontent.com/KitKat4191/JetSim-VCC-Listing/main/Website/banner.png)
 
