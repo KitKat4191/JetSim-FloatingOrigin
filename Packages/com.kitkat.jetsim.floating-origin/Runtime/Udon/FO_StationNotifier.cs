@@ -1,13 +1,13 @@
 
-using UdonSharp;
 using UnityEngine;
+using UdonSharp;
 using VRC.SDKBase;
 
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     // To ensure no sync mode conflicts occur, FO_BuildValidator.cs will automatically set the sync mode on this script to be the same as the other scripts.
     [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
-    [DisallowMultipleComponent] // Prevents multiple instances of this script from being added to the same object.
+    [DisallowMultipleComponent]
     public class FO_StationNotifier : UdonSharpBehaviour
     {
         // Automatically set by VRRefAssist before entering play mode or building the project.

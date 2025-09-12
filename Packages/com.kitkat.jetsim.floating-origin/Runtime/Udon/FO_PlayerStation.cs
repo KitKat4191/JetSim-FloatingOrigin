@@ -2,16 +2,14 @@
 //#define DO_LOGGING
 
 using UnityEngine;
-
-using VRC.Udon.Common;
-using VRC.SDKBase;
 using UdonSharp;
-
+using VRC.SDKBase;
+using VRC.Udon.Common;
 using VRRefAssist;
 
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
-    [AddComponentMenu("")]
+    [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class FO_PlayerStation : UdonSharpBehaviour
     {

@@ -1,5 +1,5 @@
 
-#define DO_LOGGING
+//#define DO_LOGGING
 #pragma warning disable IDE1006 // Naming Styles
 
 using UnityEngine;
