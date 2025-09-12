@@ -90,7 +90,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _ExternalStationEntered()
         {
 #if DO_LOGGING
-            _print("_ExternalStationEntered called");
+            FO_Debug.Log("_ExternalStationEntered called");
 #endif
             InExternalStation = true;
 
@@ -103,7 +103,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _ExternalStationExited()
         {
 #if DO_LOGGING
-            _print("_ExternalStationExited called");
+            FO_Debug.Log("_ExternalStationExited called");
 #endif
             InExternalStation = false;
 
@@ -160,7 +160,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
 
 #if DO_LOGGING
-            _printSuccess($"Moved origin {playerPos.magnitude}m");
+            FO_Debug.LogSuccess($"Moved origin {playerPos.magnitude}m");
 #endif
         }
 
@@ -249,30 +249,5 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         #endregion // ARRAY STUFF
 
         #endregion // INTERNAL
-
-        #region LOGGING
-#if DO_LOGGING
-        private const string _LOG_IDENTIFIER = "[<color=purple>FloatingOrigin</color>]";
-        protected void _print(string message)
-        {
-            Debug.Log($"{_LOG_IDENTIFIER} <color=white>[{name}]</color> <color=lightblue>{message}</color>", this);
-        }
-
-        protected void _printSuccess(string message)
-        {
-            Debug.Log($"{_LOG_IDENTIFIER} <color=white>[{name}]</color> <color=lime>{message}</color>", this);
-        }
-
-        protected void _printWarning(string message)
-        {
-            Debug.LogWarning($"{_LOG_IDENTIFIER} <color=white>[{name}]</color> <color=orange>{message}</color>", this);
-        }
-
-        protected void _printError(string message)
-        {
-            Debug.LogError($"{_LOG_IDENTIFIER} <color=white>[{name}]</color> <color=red>{message}</color>", this);
-        }
-#endif
-        #endregion // LOGGING
     }
 }

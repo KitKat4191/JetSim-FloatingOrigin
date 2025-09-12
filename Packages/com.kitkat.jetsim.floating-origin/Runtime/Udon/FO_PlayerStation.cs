@@ -75,7 +75,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             _anchor = manager.anchor;
 
 #if DO_LOGGING
-            _print(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
+            FO_Debug.Log(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
 #endif
 
             station.PlayerMobility = _localPlayerIsOwner ? VRCStation.Mobility.Mobile : VRCStation.Mobility.ImmobilizeForVehicle;
@@ -156,7 +156,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
 
 #if DO_LOGGING
-            if (_flagDiscontinuity) _print($"Discontinuity triggered.");
+            if (_flagDiscontinuity) FO_Debug.Log($"Discontinuity triggered.");
 #endif
         }
         public override void OnPostSerialization(SerializationResult result)
@@ -232,7 +232,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _OnEnterExternalStation()
         {
             #if DO_LOGGING
-            _print("_OnEnterExternalStation");
+            FO_Debug.Log("_OnEnterExternalStation");
             #endif
 
             gameObject.SetActive(false);
@@ -240,7 +240,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         public void _OnExitExternalStation()
         {
             #if DO_LOGGING
-            _print("_OnExitExternalStation");
+            FO_Debug.Log("_OnExitExternalStation");
             #endif
 
             gameObject.SetActive(true);
@@ -259,7 +259,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!_localPlayerIsOwner) return;
             
             #if DO_LOGGING
-            _print("Entered FO_PlayerStation");
+            FO_Debug.Log("Entered FO_PlayerStation");
             #endif
 
             _localPlayerSeated = true;
@@ -271,8 +271,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
             #if DO_LOGGING
-            _print("Exited FO_PlayerStation");
-            _print("Distance check called from OnStationExited");
+            FO_Debug.Log("Exited FO_PlayerStation");
+            FO_Debug.Log("Distance check called from OnStationExited");
             #endif
 
             _localPlayerSeated = false;
@@ -289,7 +289,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
             #if DO_LOGGING
-            _print("Local Player Respawned.");
+            FO_Debug.Log("Local Player Respawned.");
             #endif
 
             _flagDiscontinuity = true;
@@ -321,7 +321,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (manager.InExternalStation)
             {
                 #if DO_LOGGING
-                _printWarning("_ForcePlayerBackIn aborted : _localPlayer is in an external station.");
+                FO_Debug.LogWarning("_ForcePlayerBackIn aborted : _localPlayer is in an external station.");
                 #endif
 
                 return;
@@ -330,7 +330,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (_localPlayerSeated)
             {
                 #if DO_LOGGING
-                _printWarning("_ForcePlayerBackIn aborted : _localPlayer is already in the FO_PlayerStation.");
+                FO_Debug.LogWarning("_ForcePlayerBackIn aborted : _localPlayer is already in the FO_PlayerStation.");
                 #endif
 
                 return;
@@ -340,30 +340,5 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         }
 
         #endregion // FORCE PLAYER IN
-
-        #region LOGGING
-#if DO_LOGGING
-        private const string _LOG_IDENTIFIER = "[<color=purple>FloatingOrigin</color>]";
-        protected void _print(string message)
-        {
-            Debug.Log($"{_LOG_IDENTIFIER} <color=lightblue>{message}</color>", this);
-        }
-
-        protected void _printSuccess(string message)
-        {
-            Debug.Log($"{_LOG_IDENTIFIER} <color=lime>{message}</color>", this);
-        }
-
-        protected void _printWarning(string message)
-        {
-            Debug.LogWarning($"{_LOG_IDENTIFIER} <color=orange>{message}</color>", this);
-        }
-
-        protected void _printError(string message)
-        {
-            Debug.LogError($"{_LOG_IDENTIFIER} <color=red>{message}</color>", this);
-        }
-#endif
-        #endregion // LOGGING
     }
 }
