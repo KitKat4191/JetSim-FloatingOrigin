@@ -1,6 +1,6 @@
 {
   "name": "com.kitkat.jetsim.floating-origin",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "type": "tool",
   "displayName": "JetSim - Floating Origin",
   "description": "A system for VRChat worlds that mitigates floating point issues by moving the world and player like a treadmill.",
@@ -12,7 +12,8 @@
   "unity": "2022.3",
   "unityRelease": "22f1",
   "dependencies": {
-    "com.livedimensions.vrrefassist": "1.0.0"
+    "com.livedimensions.vrrefassist": "1.0.0",
+    "com.vrchat.worlds": "3.7.4"
   },
   "keywords": [
     "kitkat",
