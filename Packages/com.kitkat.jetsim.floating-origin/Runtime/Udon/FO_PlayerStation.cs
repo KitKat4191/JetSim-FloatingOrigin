@@ -98,6 +98,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region SYNC & INTERPOLATION
 
+        private void FlagDiscontinuity() => _flagDiscontinuity = true;
+        
         private void HandleSerialization()
         {
             _timeSinceLastSerialization += Time.deltaTime;
@@ -245,7 +247,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             gameObject.SetActive(true);
 
-            _flagDiscontinuity = true;
+            FlagDiscontinuity();
 
             SendCustomEventDelayedFrames(nameof(_ForcePlayerInStationLoop), 1);
         }
@@ -263,7 +265,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             #endif
 
             _localPlayerSeated = true;
-            _flagDiscontinuity = true;
+            FlagDiscontinuity();
         }
         public override void OnStationExited(VRCPlayerApi player)
         {
@@ -276,7 +278,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             #endif
 
             _localPlayerSeated = false;
-            _flagDiscontinuity = true;
+            FlagDiscontinuity();
 
             SendCustomEventDelayedFrames(nameof(_ForcePlayerInStationLoop), 1);
 
@@ -292,7 +294,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             FO_Debug.Log("Local Player Respawned.");
             #endif
 
-            _flagDiscontinuity = true;
+            FlagDiscontinuity();
 
             _owner.UseAttachedStation();
         }
