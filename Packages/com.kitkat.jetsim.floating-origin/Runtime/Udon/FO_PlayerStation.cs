@@ -287,12 +287,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             #if DO_LOGGING
             FO_Debug.Log("Local Player Respawned.");
-            FO_Debug.Log("Distance check called from OnPlayerRespawn");
             #endif
 
             FlagDiscontinuity();
-            
-            manager.SendCustomEventDelayedFrames(nameof(Runtime.FO_Manager._DistanceCheck), 1);
         }
 
         #endregion // VRC OVERRIDES
