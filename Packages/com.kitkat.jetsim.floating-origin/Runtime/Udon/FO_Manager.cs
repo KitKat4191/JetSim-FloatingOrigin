@@ -12,7 +12,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
     [Singleton]
     [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class FO_Manager : UdonSharpBehaviour
+    public partial class FO_Manager : UdonSharpBehaviour
     {
         #region PUBLIC FIELDS
 
@@ -79,16 +79,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         }
 
         #endregion // UNITY
-
-        #region API
-
-        public void _Subscribe(FO_Listener listener) => _listeners = _listeners.AddUnique(listener);
-        public void _Unsubscribe(FO_Listener listener) => _listeners = _listeners.Remove(listener);
-
-        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.AddUnique(obj);
-        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.Remove(obj);
-
-        #endregion // API
         
         #region VRC OVERRIDES
 
@@ -142,17 +132,14 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             StartDistanceCheckLoop();
         }
-        
-        /// <summary>
-        /// Checks the player's distance from 0,0,0 and moves the world and player if the distance is larger than a set threshold.
-        /// </summary>
-        private void DistanceCheck()
+
+        private void DistanceCheck_Internal()
         {
             Vector3 playerPos = _localPlayer.GetPosition();
             if (playerPos.magnitude < DistanceMoveThreshold) return;
 
             TranslateWorld(-playerPos);
-            
+
 #if DO_LOGGING
             FO_Debug.Log($"Translate World called from DistanceCheck.");
 #endif
