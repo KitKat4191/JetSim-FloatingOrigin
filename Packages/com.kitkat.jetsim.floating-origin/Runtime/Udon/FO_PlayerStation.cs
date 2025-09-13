@@ -82,7 +82,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             if (!_localPlayerIsOwner) return;
 
-            manager._RegisterPlayerStation(this);
+            manager.RegisterPlayerStation(this);
 
             _ForcePlayerInStationLoop();
 

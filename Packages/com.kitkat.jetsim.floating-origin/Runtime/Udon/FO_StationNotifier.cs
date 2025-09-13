@@ -18,13 +18,13 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (!VRC.SDKBase.Utilities.IsValid(player)) return;
             if (!player.isLocal) return;
-            floatingOriginManager_SINGLETON._ExternalStationEntered();
+            floatingOriginManager_SINGLETON.ExternalStationEntered();
         }
         public override void OnStationExited(VRCPlayerApi player)
         {
             if (!VRC.SDKBase.Utilities.IsValid(player)) return;
             if (!player.isLocal) return;
-            floatingOriginManager_SINGLETON._ExternalStationExited();
+            floatingOriginManager_SINGLETON.ExternalStationExited();
         }
     }
 }
