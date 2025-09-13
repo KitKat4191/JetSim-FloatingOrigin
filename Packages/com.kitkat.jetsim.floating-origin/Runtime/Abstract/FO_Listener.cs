@@ -15,9 +15,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         protected virtual void OnEnable()
         {
-            manager._Subscribe(this);
+            manager.Subscribe(this);
             _Notify(manager.anchor.position);
         }
-        protected virtual void OnDisable() => manager._Unsubscribe(this);
+        protected virtual void OnDisable() => manager.Unsubscribe(this);
     }
 }
