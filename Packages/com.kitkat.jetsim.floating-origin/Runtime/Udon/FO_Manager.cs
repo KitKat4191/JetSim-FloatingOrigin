@@ -89,7 +89,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         internal void _ExternalStationEntered()
         {
 #if DO_LOGGING
-            FO_Debug.Log("_ExternalStationEntered called");
+            FO_Debug.Log("External station entered.");
 #endif
             InExternalStation = true;
 
@@ -102,7 +102,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         internal void _ExternalStationExited()
         {
 #if DO_LOGGING
-            FO_Debug.Log("_ExternalStationExited called");
+            FO_Debug.Log("External station exited.");
 #endif
             InExternalStation = false;
 
