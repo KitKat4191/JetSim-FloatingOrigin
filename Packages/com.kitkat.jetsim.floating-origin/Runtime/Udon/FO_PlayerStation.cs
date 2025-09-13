@@ -279,6 +279,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             _localPlayerSeated = false;
 
             SendCustomEventDelayedFrames(nameof(_ForcePlayerInStationLoop), 1);
+            manager.SendCustomEventDelayedFrames(nameof(manager.DistanceCheck), 1);
         }
 
         public override void OnPlayerRespawn(VRCPlayerApi player)
