@@ -87,7 +87,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// <summary>
         /// This is called from the FO_StationNotifier to hand off sync responsibility to the station the local player entered.
         /// </summary>
-        public void _ExternalStationEntered()
+        internal void _ExternalStationEntered()
         {
 #if DO_LOGGING
             FO_Debug.Log("_ExternalStationEntered called");
@@ -100,7 +100,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// <summary>
         /// This is called from the FO_StationNotifier to give sync responsibility back to the local player's FO_PlayerStation.
         /// </summary>
-        public void _ExternalStationExited()
+        internal void _ExternalStationExited()
         {
 #if DO_LOGGING
             FO_Debug.Log("_ExternalStationExited called");
@@ -110,11 +110,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (LocalPlayerStation)
                 LocalPlayerStation._OnExitExternalStation();
         }
-
-        /// <summary>
-        /// Called by FO_PlayerStation when assigned to the local player.
-        /// </summary>
-        public void _RegisterPlayerStation(FO_PlayerStation playerStation)
+        
+        internal void _RegisterPlayerStation(FO_PlayerStation playerStation)
         {
             if (!playerStation) return;
 
