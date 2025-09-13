@@ -124,46 +124,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             StartDistanceCheckLoop();
         }
 
-        /// <summary>
-        /// Checks the player's distance from 0,0,0 and moves the world parent and player if the distance is larger than a set threshold.
-        /// </summary>
-        public void _DistanceCheck()
-        {
-            VRCPlayerApi.TrackingData _trackingData = _localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Origin);
-
-            Vector3 playerPos = _trackingData.position;
-            if (playerPos.magnitude < DistanceMoveThreshold) return;
-
-            // Move the world
-            transform.Translate(-playerPos);
-
-            // Move the player
-            if (!InExternalStation)
-            {
-                Vector3 playerVelocity = _localPlayer.GetVelocity();
-                _localPlayer.TeleportTo(Vector3.zero, _trackingData.rotation, VRC_SceneDescriptor.SpawnOrientation.AlignRoomWithSpawnPoint);
-                _playerStation.UseStation(_localPlayer);
-                _localPlayer.SetVelocity(playerVelocity);
-            }
-
-            // Reparent children to avoid large local positions on colliders and stuff near the player.
-            transform.DetachChildren();
-            transform.position = Vector3.zero;
-            for (int i = 0; i < _rootObjects.Length; i++)
-                _rootObjects[i].SetParent(transform);
-
-            for (int i = 0; i < _dynamicObjects.Length; i++)
-                _dynamicObjects[i].SetParent(transform);
-
-            Vector3 anchorPos = anchor.position;
-            NotifyListeners(anchorPos);
-            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
-
-#if DO_LOGGING
-            FO_Debug.LogSuccess($"Moved origin {playerPos.magnitude}m");
-#endif
-        }
-
         public void _Subscribe(FO_Listener listener) => _listeners = AddUnique(_listeners, listener);
         public void _Unsubscribe(FO_Listener listener) => _listeners = Remove(_listeners, listener);
 
@@ -174,6 +134,21 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region INTERNAL
 
+        /// <summary>
+        /// Checks the player's distance from 0,0,0 and moves the world and player if the distance is larger than a set threshold.
+        /// </summary>
+        private void DistanceCheck()
+        {
+            Vector3 playerPos = _localPlayer.GetPosition();
+            if (playerPos.magnitude < DistanceMoveThreshold) return;
+
+            TranslateWorld(-playerPos);
+            
+#if DO_LOGGING
+            FO_Debug.Log($"Translate World called from DistanceCheck.");
+#endif
+        }
+        
         private void StartDistanceCheckLoop()
         {
             if (_distanceCheckLoopStarted) return;
@@ -189,10 +164,43 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// </remarks>
         public void _DistanceCheckLoop()
         {
-            _DistanceCheck();
+            DistanceCheck();
             SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsPerDistanceCheck);
         }
 
+        private void TranslateWorld(Vector3 delta)
+        {
+            // Move the world
+            transform.Translate(delta);
+
+            // Move the player
+            if (!InExternalStation)
+            {
+                Vector3 playerVelocity = _localPlayer.GetVelocity();
+                _localPlayer.TeleportTo(_localPlayer.GetPosition() + delta);
+                //_playerStation.UseStation(_localPlayer); TODO is this really required?
+                _localPlayer.SetVelocity(playerVelocity);
+            }
+
+            // Reparent children to avoid large local positions on colliders and stuff near the player.
+            transform.DetachChildren();
+            transform.position = Vector3.zero;
+            
+            foreach (Transform t in _rootObjects)
+                t.SetParent(transform);
+
+            foreach (Transform t in _dynamicObjects)
+                t.SetParent(transform);
+
+            Vector3 anchorPos = anchor.position;
+            NotifyListeners(anchorPos);
+            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
+
+#if DO_LOGGING
+            FO_Debug.LogSuccess($"Moved origin {delta.magnitude}m");
+#endif
+        }
+        
         private void NotifyListeners(Vector3 newOriginOffset)
         {
             foreach (FO_Listener listener in _listeners)
