@@ -129,6 +129,21 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #endregion // API
 
+        #region VRC OVERRIDES
+
+        public override void OnPlayerRespawn(VRCPlayerApi _)
+        {
+            // When the player respawns we want to re-align the coordinate system so world space objects such as
+            // prints, cameras, portals, etc. appear in the correct positions.
+            TranslateWorld(-anchor.position);
+            
+#if DO_LOGGING
+            FO_Debug.Log($"Translate World called from OnPlayerRespawn.");
+#endif
+        }
+
+        #endregion // VRC OVERRIDES
+        
         #region INTERNAL
 
         /// <summary>
