@@ -82,7 +82,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// <summary>
         /// The station currently assigned to the local player.
         /// </summary>
-        public FO_PlayerStation LocalPlayerStation { get; private set; }
+        private FO_PlayerStation _localPlayerStation;
 
         /// <summary>
         /// This is called from the FO_StationNotifier to hand off sync responsibility to the station the local player entered.
@@ -94,8 +94,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 #endif
             InExternalStation = true;
 
-            if (LocalPlayerStation)
-                LocalPlayerStation._OnEnterExternalStation();
+            if (_localPlayerStation)
+                _localPlayerStation._OnEnterExternalStation();
         }
         /// <summary>
         /// This is called from the FO_StationNotifier to give sync responsibility back to the local player's FO_PlayerStation.
@@ -107,16 +107,16 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 #endif
             InExternalStation = false;
 
-            if (LocalPlayerStation)
-                LocalPlayerStation._OnExitExternalStation();
+            if (_localPlayerStation)
+                _localPlayerStation._OnExitExternalStation();
         }
         
         internal void _RegisterPlayerStation(FO_PlayerStation playerStation)
         {
             if (!playerStation) return;
 
-            LocalPlayerStation = playerStation;
-            _playerStation = LocalPlayerStation.GetComponent<VRCStation>();
+            _localPlayerStation = playerStation;
+            _playerStation = _localPlayerStation.GetComponent<VRCStation>();
 
             StartDistanceCheckLoop();
         }

@@ -11,7 +11,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class FO_PlayerStation : UdonSharpBehaviour
+    internal class FO_PlayerStation : UdonSharpBehaviour
     {
         #region VRRefAssist
 
@@ -231,7 +231,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         
         #region FLOATING ORIGIN EVENTS
 
-        public void _OnEnterExternalStation()
+        internal void _OnEnterExternalStation()
         {
             #if DO_LOGGING
             FO_Debug.Log("_OnEnterExternalStation");
@@ -239,7 +239,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             gameObject.SetActive(false);
         }
-        public void _OnExitExternalStation()
+        internal void _OnExitExternalStation()
         {
             #if DO_LOGGING
             FO_Debug.Log("_OnExitExternalStation");
@@ -296,6 +296,9 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region FORCE PLAYER IN
 
+        /// <summary>
+        /// Only public due to SendCustomEventDelayedSeconds. Don't call this.
+        /// </summary>
         public void _ForcePlayerInStationLoop()
         {
             if (_localPlayerSeated) return;
