@@ -121,11 +121,11 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             StartDistanceCheckLoop();
         }
 
-        public void _Subscribe(FO_Listener listener) => _listeners = AddUnique(_listeners, listener);
-        public void _Unsubscribe(FO_Listener listener) => _listeners = Remove(_listeners, listener);
+        public void _Subscribe(FO_Listener listener) => _listeners = _listeners.AddUnique(listener);
+        public void _Unsubscribe(FO_Listener listener) => _listeners = _listeners.Remove(listener);
 
-        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = AddUnique(_dynamicObjects, obj);
-        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = Remove(_dynamicObjects, obj);
+        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.AddUnique(obj);
+        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.Remove(obj);
 
         #endregion // API
 
@@ -221,52 +221,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
                 listener._Notify(newOriginOffset);
             }
         }
-
-        #region ARRAY STUFF
-
-        private static T[] AddUnique<T>(T[] array, T item)
-        {
-            if (item == null) return array;
-            int index = System.Array.IndexOf(array, item);
-            if (index > -1) return array; // The item is already in the array.
-
-            var temp = new T[array.Length + 1];
-
-            array.CopyTo(temp, 0);
-
-            array = temp;
-            array[array.Length - 1] = item;
-
-            return array;
-        }
-
-        private static T[] Remove<T>(T[] array, T item)
-        {
-            int listenerIndex = System.Array.IndexOf(array, item);
-            if (listenerIndex == -1) return array; // The item isn't in the array so we don't need to remove it.
-
-            if (array.Length <= 1) return new T[0];
-
-            array[listenerIndex] = default;
-            // Put the last item in place of the empty slot to fill the gap.
-            int newLength = array.Length - 1;
-            Swap(array, listenerIndex, newLength);
-
-            // Shrink the array by 1
-            var newArray = new T[newLength];
-
-            System.Array.Copy(array, newArray, newLength);
-            return newArray;
-        }
-
-        private static void Swap<T>(T[] array, int A, int B)
-        {
-            T temp = array[A];
-            array[A] = array[B];
-            array[B] = temp;
-        }
-
-        #endregion // ARRAY STUFF
 
         #endregion // INTERNAL
     }
