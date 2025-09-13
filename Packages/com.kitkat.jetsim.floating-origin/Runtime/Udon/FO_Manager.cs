@@ -36,7 +36,11 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private int _vrcShaderPropertyID;
 
-        private VRCStation _playerStation;
+        /// <summary>
+        /// The station currently assigned to the local player.
+        /// </summary>
+        private FO_PlayerStation _localPlayerStation;
+        
         private VRCPlayerApi _localPlayer;
         private Transform[] _rootObjects;
 
@@ -78,10 +82,30 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region API
 
-        /// <summary>
-        /// The station currently assigned to the local player.
-        /// </summary>
-        private FO_PlayerStation _localPlayerStation;
+        public void _Subscribe(FO_Listener listener) => _listeners = _listeners.AddUnique(listener);
+        public void _Unsubscribe(FO_Listener listener) => _listeners = _listeners.Remove(listener);
+
+        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.AddUnique(obj);
+        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.Remove(obj);
+
+        #endregion // API
+        
+        #region VRC OVERRIDES
+
+        public override void OnPlayerRespawn(VRCPlayerApi _)
+        {
+            // When the player respawns we want to re-align the coordinate system so world space objects such as
+            // prints, cameras, portals, etc. appear in the correct positions.
+            TranslateWorld(-anchor.position);
+            
+#if DO_LOGGING
+            FO_Debug.Log($"Translate World called from OnPlayerRespawn.");
+#endif
+        }
+
+        #endregion // VRC OVERRIDES
+        
+        #region INTERNAL
 
         /// <summary>
         /// This is called from the FO_StationNotifier to hand off sync responsibility to the station the local player entered.
@@ -115,36 +139,10 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!playerStation) return;
 
             _localPlayerStation = playerStation;
-            _playerStation = _localPlayerStation.GetComponent<VRCStation>();
 
             StartDistanceCheckLoop();
         }
-
-        public void _Subscribe(FO_Listener listener) => _listeners = _listeners.AddUnique(listener);
-        public void _Unsubscribe(FO_Listener listener) => _listeners = _listeners.Remove(listener);
-
-        public void _RegisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.AddUnique(obj);
-        public void _UnregisterDynamicObject(Transform obj) => _dynamicObjects = _dynamicObjects.Remove(obj);
-
-        #endregion // API
-
-        #region VRC OVERRIDES
-
-        public override void OnPlayerRespawn(VRCPlayerApi _)
-        {
-            // When the player respawns we want to re-align the coordinate system so world space objects such as
-            // prints, cameras, portals, etc. appear in the correct positions.
-            TranslateWorld(-anchor.position);
-            
-#if DO_LOGGING
-            FO_Debug.Log($"Translate World called from OnPlayerRespawn.");
-#endif
-        }
-
-        #endregion // VRC OVERRIDES
         
-        #region INTERNAL
-
         /// <summary>
         /// Checks the player's distance from 0,0,0 and moves the world and player if the distance is larger than a set threshold.
         /// </summary>
