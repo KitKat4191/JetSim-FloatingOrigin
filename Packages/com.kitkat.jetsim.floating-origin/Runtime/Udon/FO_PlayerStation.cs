@@ -265,7 +265,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             #endif
 
             _localPlayerSeated = true;
-            FlagDiscontinuity();
         }
         public override void OnStationExited(VRCPlayerApi player)
         {
@@ -274,15 +273,11 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             #if DO_LOGGING
             FO_Debug.Log("Exited FO_PlayerStation");
-            FO_Debug.Log("Distance check called from OnStationExited");
             #endif
 
             _localPlayerSeated = false;
-            FlagDiscontinuity();
 
             SendCustomEventDelayedFrames(nameof(_ForcePlayerInStationLoop), 1);
-
-            manager.SendCustomEventDelayedFrames(nameof(Runtime.FO_Manager._DistanceCheck), 1);
         }
 
         public override void OnPlayerRespawn(VRCPlayerApi player)
@@ -292,11 +287,12 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             #if DO_LOGGING
             FO_Debug.Log("Local Player Respawned.");
+            FO_Debug.Log("Distance check called from OnPlayerRespawn");
             #endif
 
             FlagDiscontinuity();
-
-            _owner.UseAttachedStation();
+            
+            manager.SendCustomEventDelayedFrames(nameof(Runtime.FO_Manager._DistanceCheck), 1);
         }
 
         #endregion // VRC OVERRIDES
