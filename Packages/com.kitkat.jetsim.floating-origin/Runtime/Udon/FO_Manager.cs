@@ -11,7 +11,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     [Singleton]
     [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
-    [HelpURL("https://github.com/KitKat4191")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class FO_Manager : UdonSharpBehaviour
     {
