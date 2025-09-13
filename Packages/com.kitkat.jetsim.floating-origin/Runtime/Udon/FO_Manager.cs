@@ -40,6 +40,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// The station currently assigned to the local player.
         /// </summary>
         private FO_PlayerStation _localPlayerStation;
+        private VRCStation _playerStation;
         
         private VRCPlayerApi _localPlayer;
         private Transform[] _rootObjects;
@@ -129,6 +130,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!playerStation) return;
 
             _localPlayerStation = playerStation;
+            _playerStation = playerStation.GetComponent<VRCStation>();
 
             StartDistanceCheckLoop();
         }
@@ -174,6 +176,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             {
                 Vector3 playerVelocity = _localPlayer.GetVelocity();
                 _localPlayer.TeleportTo(_localPlayer.GetPosition() + delta);
+                _playerStation.UseStation(_localPlayer);
                 _localPlayer.SetVelocity(playerVelocity);
             }
 
