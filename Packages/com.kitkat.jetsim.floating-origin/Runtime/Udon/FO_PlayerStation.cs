@@ -7,6 +7,7 @@ using VRC.SDKBase;
 using VRC.Udon.Common;
 using VRRefAssist;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("KitKat.JetSim.FloatingOrigin.Editor")]
 namespace KitKat.JetSim.FloatingOrigin.Runtime
 {
     [AddComponentMenu("")] // Hides this script from the add component menu to reduce clutter.
@@ -30,7 +31,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         
         /// <summary>
-        /// If the local local player is in the FO_PlayerStation.
+        /// If the local player is in the FO_PlayerStation.
         /// </summary>
         private bool _localPlayerSeated;
 
