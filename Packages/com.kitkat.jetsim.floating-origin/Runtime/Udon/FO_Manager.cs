@@ -174,7 +174,6 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             {
                 Vector3 playerVelocity = _localPlayer.GetVelocity();
                 _localPlayer.TeleportTo(_localPlayer.GetPosition() + delta);
-                //_playerStation.UseStation(_localPlayer); TODO is this really required?
                 _localPlayer.SetVelocity(playerVelocity);
             }
 
