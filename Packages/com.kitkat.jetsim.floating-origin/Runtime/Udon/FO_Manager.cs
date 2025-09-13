@@ -177,7 +177,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             SendCustomEventDelayedSeconds(nameof(_DistanceCheckLoop), SecondsPerDistanceCheck);
         }
 
-        private void TranslateWorld(Vector3 delta)
+        private void TranslateWorld(Vector3 delta) // TODO: use double precision
         {
             // Move the world
             transform.Translate(delta);
