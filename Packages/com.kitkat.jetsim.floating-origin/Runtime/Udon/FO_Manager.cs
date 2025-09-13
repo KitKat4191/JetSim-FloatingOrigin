@@ -35,7 +35,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         #region PRIVATE FIELDS
 
-        private int _VRCShaderPropertyID;
+        private int _vrcShaderPropertyID;
 
         private VRCStation _playerStation;
         private VRCPlayerApi _localPlayer;
@@ -65,8 +65,8 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         private void Start()
         {
-            _VRCShaderPropertyID = VRCShader.PropertyToID("_Udon_FO_WorldOffset");
-            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchor.position);
+            _vrcShaderPropertyID = VRCShader.PropertyToID("_Udon_FO_WorldOffset");
+            VRCShader.SetGlobalVector(_vrcShaderPropertyID, anchor.position);
 
             _localPlayer = Networking.LocalPlayer;
 
@@ -206,7 +206,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             Vector3 anchorPos = anchor.position;
             NotifyListeners(anchorPos);
-            VRCShader.SetGlobalVector(_VRCShaderPropertyID, anchorPos);
+            VRCShader.SetGlobalVector(_vrcShaderPropertyID, anchorPos);
 
 #if DO_LOGGING
             FO_Debug.LogSuccess($"Moved origin {delta.magnitude}m");
