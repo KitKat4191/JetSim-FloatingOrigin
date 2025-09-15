@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
-    internal static class FO_Define
+    internal static class FO_Defines
     {
         private const string _PACKAGE_DEFINE = "JS_FLOATING_ORIGIN";
         private const string _DEBUG_DEFINE = _PACKAGE_DEFINE + "_ENABLE_LOGGING";
