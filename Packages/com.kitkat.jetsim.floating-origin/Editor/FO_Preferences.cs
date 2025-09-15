@@ -50,6 +50,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     var settings = FO_Preferences.GetSerialized();
                     EditorGUILayout.PropertyField(settings.FindProperty("ShowObjectSyncWarning"));
                     EditorGUILayout.PropertyField(settings.FindProperty("ShowObjectSyncPopup"));
+                    // TODO setting for debug mode
                     settings.ApplyModifiedPropertiesWithoutUndo();
                 },
 
