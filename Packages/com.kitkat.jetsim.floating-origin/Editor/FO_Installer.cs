@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-using VRRefAssist.Editor.Extensions;
 using KitKat.JetSim.FloatingOrigin.Runtime;
 
 using System.Linq;
@@ -40,7 +39,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             var manager = Object.FindObjectOfType<FO_Manager>(true);
             if (manager)
             {
-                FO_Debugger.LogWarning("Prefab was already present in the scene!", manager);
+                FO_Debug.LogWarning("Prefab was already present in the scene!", manager);
                 Selection.activeObject = manager;
                 EditorGUIUtility.PingObject(manager);
                 return false;
@@ -54,7 +53,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             Selection.activeObject = manager;
             EditorGUIUtility.PingObject(manager);
 
-            FO_Debugger.LogSuccess("Added Floating Origin prefab to scene.");
+            FO_Debug.LogSuccess("Added Floating Origin prefab to scene.");
             return true;
         }
 
@@ -80,7 +79,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     p.main.customSimulationSpace == null
                 ).ToArray();
 
-            if (particleSystems.Length == 0) { FO_Debugger.LogSuccess("All particle systems validated."); return false; }
+            if (particleSystems.Length == 0) { FO_Debug.LogSuccess("All particle systems validated."); return false; }
 
             int input = EditorUtility.DisplayDialogComplex(
                     title: "JetSim - FloatingOrigin",
@@ -106,10 +105,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             {
                 var particleSystemMain = particle.main;
                 particleSystemMain.simulationSpace = space;
-                FO_Debugger.Log("Updated simulation space.", particle);
+                FO_Debug.Log("Updated simulation space.", particle);
             }
 
-            FO_Debugger.LogSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
+            FO_Debug.LogSuccess($"Updated simulation space on {systems.Length} ParticleSystems to {space}.");
         }
 
         #endregion // INTERNAL
