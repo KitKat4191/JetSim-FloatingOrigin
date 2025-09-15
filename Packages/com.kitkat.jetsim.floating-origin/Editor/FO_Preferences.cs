@@ -9,10 +9,11 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 {
     public class FO_Preferences : ScriptableObject
     {
-        public const string PreferencesPath = "Assets/KitKat/JetSim/FloatingOrigin/FloatingOriginPreferences.asset";
+        private const string PreferencesPath = "Assets/KitKat/JetSim/FloatingOrigin/FloatingOriginPreferences.asset";
 
-        public bool ShowObjectSyncWarning = true;
-        public bool ShowObjectSyncPopup = true;
+        [SerializeField] internal bool ShowObjectSyncWarning = true;
+        [SerializeField] internal bool ShowObjectSyncPopup = true;
+        [SerializeField] internal bool EnableDebugMode;
 
         internal static FO_Preferences GetOrCreate()
         {
@@ -47,10 +48,10 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                 // Create the SettingsProvider and initialize its drawing (IMGUI) function in place:
                 guiHandler = (searchContext) =>
                 {
-                    var settings = FO_Preferences.GetSerialized();
-                    EditorGUILayout.PropertyField(settings.FindProperty("ShowObjectSyncWarning"));
-                    EditorGUILayout.PropertyField(settings.FindProperty("ShowObjectSyncPopup"));
-                    // TODO setting for debug mode
+                    SerializedObject settings = FO_Preferences.GetSerialized();
+                    EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.ShowObjectSyncWarning)));
+                    EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.ShowObjectSyncPopup)));
+                    EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.EnableDebugMode)));
                     settings.ApplyModifiedPropertiesWithoutUndo();
                 },
 

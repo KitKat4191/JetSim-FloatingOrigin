@@ -9,11 +9,15 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         private const string _DEBUG_DEFINE = _PACKAGE_DEFINE + "_ENABLE_LOGGING";
 
         [InitializeOnLoadMethod]
-        private static void AddPackageDefine() => AddDefine(_PACKAGE_DEFINE);
-        
-        internal static void SetDebugDefine(bool enable)
+        private static void AddPackageDefines()
         {
-            if (enable) AddDefine(_DEBUG_DEFINE); 
+            AddDefine(_PACKAGE_DEFINE);
+            SetDebugDefine(FO_Preferences.GetOrCreate().EnableDebugMode);
+        }
+
+        private static void SetDebugDefine(bool enable)
+        {
+            if (enable) AddDefine(_DEBUG_DEFINE);
             else RemoveDefine(_DEBUG_DEFINE);
         }
 
@@ -34,7 +38,7 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
             BuildTargetGroup platform = EditorUserBuildSettings.selectedBuildTargetGroup;
             string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform);
             
-            if (defines.Contains(define)) return;
+            if (!defines.Contains(define)) return;
             defines = defines.Replace(define + ";", "");
             defines = defines.Replace(define, "");
             
