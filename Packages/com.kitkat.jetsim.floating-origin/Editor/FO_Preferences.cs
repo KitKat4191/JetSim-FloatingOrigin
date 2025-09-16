@@ -13,6 +13,8 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
 
         [SerializeField] internal bool ShowObjectSyncWarning = true;
         [SerializeField] internal bool ShowObjectSyncPopup = true;
+        [Header("Warning! Read the tooltip!")]
+        [Tooltip("Clicking this will force a full recompilation of your project!")]
         [SerializeField] internal bool EnableDebugMode;
 
         internal static FO_Preferences GetOrCreate()
@@ -51,8 +53,14 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
                     SerializedObject settings = FO_Preferences.GetSerialized();
                     EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.ShowObjectSyncWarning)));
                     EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.ShowObjectSyncPopup)));
-                    EditorGUILayout.PropertyField(settings.FindProperty(nameof(FO_Preferences.EnableDebugMode)));
+                    
+                    SerializedProperty enableDebugModeProperty = settings.FindProperty(nameof(FO_Preferences.EnableDebugMode));
+                    bool previousDebugMode = enableDebugModeProperty.boolValue;
+                    bool currentDebugMode = EditorGUILayout.PropertyField(enableDebugModeProperty);
+                    
                     settings.ApplyModifiedPropertiesWithoutUndo();
+                    
+                    if (currentDebugMode != previousDebugMode) FO_Defines.UpdatePackageDefines();
                 },
 
                 // Populate the search keywords to enable smart search filtering and label highlighting:

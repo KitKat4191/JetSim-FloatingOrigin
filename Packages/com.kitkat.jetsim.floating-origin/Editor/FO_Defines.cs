@@ -1,5 +1,7 @@
 
+using UdonSharp;
 using UnityEditor;
+using UnityEditor.Compilation;
 
 namespace KitKat.JetSim.FloatingOrigin.Editor
 {
@@ -9,40 +11,50 @@ namespace KitKat.JetSim.FloatingOrigin.Editor
         private const string _DEBUG_DEFINE = _PACKAGE_DEFINE + "_ENABLE_LOGGING";
 
         [InitializeOnLoadMethod]
-        private static void AddPackageDefines()
+        internal static void UpdatePackageDefines()
         {
-            AddDefine(_PACKAGE_DEFINE);
-            SetDebugDefine(FO_Preferences.GetOrCreate().EnableDebugMode);
+            bool definesChanged = false;
+            definesChanged |= TryAddDefine(_PACKAGE_DEFINE);
+            definesChanged |= SetDebugDefine(FO_Preferences.GetOrCreate().EnableDebugMode);
+
+            if (definesChanged)
+            {
+                CompilationPipeline.RequestScriptCompilation(RequestScriptCompilationOptions.CleanBuildCache);
+                UdonSharpProgramAsset.CompileAllCsPrograms(true);
+            }
         }
 
-        private static void SetDebugDefine(bool enable)
+        private static bool SetDebugDefine(bool enable)
         {
-            if (enable) AddDefine(_DEBUG_DEFINE);
-            else RemoveDefine(_DEBUG_DEFINE);
+            return enable ? TryAddDefine(_DEBUG_DEFINE) : TryRemoveDefine(_DEBUG_DEFINE);
         }
 
-        private static void AddDefine(string define)
+        private static bool TryAddDefine(string define)
         {
             BuildTargetGroup platform = EditorUserBuildSettings.selectedBuildTargetGroup;
             string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform);
             
-            if (defines.Contains(define)) return;
+            if (defines.Contains(define)) return false;
             if (defines.Length > 0) defines += ";";
             defines += define;
             
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform, defines);
+            
+            return true;
         }
 
-        private static void RemoveDefine(string define)
+        private static bool TryRemoveDefine(string define)
         {
             BuildTargetGroup platform = EditorUserBuildSettings.selectedBuildTargetGroup;
             string defines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform);
             
-            if (!defines.Contains(define)) return;
+            if (!defines.Contains(define)) return false;
             defines = defines.Replace(define + ";", "");
             defines = defines.Replace(define, "");
             
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform, defines);
+            
+            return true;
         }
     }
 }
