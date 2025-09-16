@@ -1,8 +1,8 @@
 
 #pragma warning disable IDE1006 // Naming Styles
 
-using UnityEngine;
 using UdonSharp;
+using UnityEngine;
 using VRC.SDKBase;
 using VRRefAssist;
 
@@ -89,7 +89,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             TranslateWorld(-anchor.position);
             
 #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
-            FO_Debug.Log($"Translate World called from OnPlayerRespawn.");
+            FO_Debug.Log("Translate World called from OnPlayerRespawn.");
 #endif
         }
 
@@ -142,7 +142,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             TranslateWorld(-playerPos);
 
 #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
-            FO_Debug.Log($"Translate World called from DistanceCheck.");
+            FO_Debug.Log("Translate World called from DistanceCheck.");
 #endif
         }
         
