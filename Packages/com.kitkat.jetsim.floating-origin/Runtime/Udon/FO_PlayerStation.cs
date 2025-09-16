@@ -1,6 +1,4 @@
 
-//#define DO_LOGGING
-
 using UnityEngine;
 using UdonSharp;
 using VRC.SDKBase;
@@ -75,7 +73,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             
             _anchor = manager.anchor;
 
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log(_localPlayerIsOwner ? "_OnOwnerSet for local player" : "_OnOwnerSet for remote player");
 #endif
 
@@ -158,7 +156,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             );
 
 
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             if (_flagDiscontinuity) FO_Debug.Log($"Discontinuity triggered.");
 #endif
         }
@@ -234,7 +232,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
         internal void _OnEnterExternalStation()
         {
-            #if DO_LOGGING
+            #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("_OnEnterExternalStation");
             #endif
 
@@ -242,7 +240,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         }
         internal void _OnExitExternalStation()
         {
-            #if DO_LOGGING
+            #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("_OnExitExternalStation");
             #endif
 
@@ -261,7 +259,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         {
             if (!_localPlayerIsOwner) return;
             
-            #if DO_LOGGING
+            #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("Entered FO_PlayerStation");
             #endif
 
@@ -272,7 +270,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!_localPlayerIsOwner) return;
             if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
-            #if DO_LOGGING
+            #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("Exited FO_PlayerStation");
             #endif
 
@@ -287,7 +285,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             if (!_localPlayerIsOwner) return;
             if (!VRC.SDKBase.Utilities.IsValid(_owner)) return;
 
-            #if DO_LOGGING
+            #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("Local Player Respawned.");
             #endif
 
@@ -320,7 +318,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             
             if (manager.InExternalStation)
             {
-                #if DO_LOGGING
+                #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
                 FO_Debug.LogWarning("_ForcePlayerBackIn aborted : _localPlayer is in an external station.");
                 #endif
 
@@ -329,7 +327,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             if (_localPlayerSeated)
             {
-                #if DO_LOGGING
+                #if JS_FLOATING_ORIGIN_ENABLE_LOGGING
                 FO_Debug.LogWarning("_ForcePlayerBackIn aborted : _localPlayer is already in the FO_PlayerStation.");
                 #endif
 

@@ -1,5 +1,4 @@
 
-//#define DO_LOGGING
 #pragma warning disable IDE1006 // Naming Styles
 
 using UnityEngine;
@@ -89,7 +88,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             // prints, cameras, portals, etc. appear in the correct positions.
             TranslateWorld(-anchor.position);
             
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log($"Translate World called from OnPlayerRespawn.");
 #endif
         }
@@ -103,7 +102,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// </summary>
         internal void ExternalStationEntered()
         {
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("External station entered.");
 #endif
             InExternalStation = true;
@@ -116,7 +115,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
         /// </summary>
         internal void ExternalStationExited()
         {
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log("External station exited.");
 #endif
             InExternalStation = false;
@@ -142,7 +141,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
 
             TranslateWorld(-playerPos);
 
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.Log($"Translate World called from DistanceCheck.");
 #endif
         }
@@ -194,7 +193,7 @@ namespace KitKat.JetSim.FloatingOrigin.Runtime
             NotifyListeners(anchorPos);
             VRCShader.SetGlobalVector(_vrcShaderPropertyID, anchorPos);
 
-#if DO_LOGGING
+#if JS_FLOATING_ORIGIN_ENABLE_LOGGING
             FO_Debug.LogSuccess($"Moved origin {delta.magnitude}m");
 #endif
         }
