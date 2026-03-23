@@ -12,6 +12,10 @@
 
 ___
 
+## About
+A system for VRChat worlds that mitigates floating point rendering issues by moving the world around the player.
+___
+
 ## ⚠ Using this prefab has implications ⚠
 
 **Anything that relies on world space may not function at all, or just produce undesirable results.**
