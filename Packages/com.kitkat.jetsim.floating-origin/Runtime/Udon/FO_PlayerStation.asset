@@ -186,6 +186,9 @@ MonoBehaviour:
     - Name: suppressErrors
       Entry: 5
       Data: false
+    - Name: failIfEmpty
+      Entry: 5
+      Data: true
     - Name: 
       Entry: 8
       Data: 
